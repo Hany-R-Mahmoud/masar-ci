@@ -39,6 +39,10 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [siteUrl ? `${siteUrl}/masar-ci.png` : "/masar-ci.png"],
   },
+  icons: {
+    icon: "/masar-ci.png",
+    apple: "/masar-ci.png",
+  },
   robots: { index: true, follow: true },
 };
 
