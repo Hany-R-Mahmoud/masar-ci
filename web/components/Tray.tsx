@@ -2,6 +2,8 @@
 
 import { ACTION_PRESETS } from "@/lib/sample";
 import { TEMPLATES } from "@/lib/templates";
+import type { WorkflowTabView } from "@/components/WorkflowTabs";
+import { cn } from "@/lib/cn";
 
 const TRIGGERS = ["push", "pull_request", "workflow_dispatch", "schedule"];
 const JOBS = ["build", "test", "deploy", "lint"];
@@ -18,12 +20,18 @@ function dnd(payload: object) {
 export function Tray({
   onTemplate,
   onAddItem,
+  recent,
+  onRecent,
+  activeId,
 }: {
   onTemplate: (id: string) => void;
   onAddItem: (payload: Record<string, unknown>) => void;
+  recent: WorkflowTabView[];
+  onRecent: (id: string) => void;
+  activeId: string;
 }) {
   return (
-    <aside className="bg-surface border-r border-border overflow-auto p-3 text-[12.5px]">
+    <aside className="h-full min-h-0 bg-surface border-r border-border overflow-auto p-3 text-[12.5px]">
       <Section title="Triggers">
         {TRIGGERS.map((t) => (
           <Item
@@ -71,6 +79,28 @@ export function Tray({
           >
             <Glyph kind="tpl" />
             <span className="text-ink">{t.label}</span>
+          </button>
+        ))}
+      </Section>
+      <Section title="Recent workflows">
+        {recent.length === 0 ? (
+          <span className="px-2 text-[11px] text-ink-faint">No recent workflows.</span>
+        ) : recent.map((workflow) => (
+          <button
+            key={workflow.id}
+            type="button"
+            onClick={() => onRecent(workflow.id)}
+            aria-current={workflow.id === activeId ? "page" : undefined}
+            className={cn(
+              "flex w-full items-center gap-2 rounded-md border px-2 py-1.5 text-left focus:outline-1 focus:outline-accent",
+              workflow.id === activeId
+                ? "border-accent/45 bg-accent/10 text-ink"
+                : "border-transparent hover:border-border hover:bg-surface-2",
+            )}
+          >
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent/70" />
+            <span className="truncate font-mono text-[11px] text-ink">{workflow.name || "untitled"}</span>
+            {workflow.dirty && <span className="ml-auto text-[10px] text-accent" aria-label="Unsaved changes">●</span>}
           </button>
         ))}
       </Section>

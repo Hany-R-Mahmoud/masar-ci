@@ -19,6 +19,15 @@
   --font-mono: var(--font-ibm-plex-mono);
 }
 
+:root {
+  --workspace-tray-min: 176px;
+  --workspace-tray: 232px;
+  --workspace-inspector-min: 280px;
+  --workspace-inspector: 430px;
+  --workflow-tab-min: 150px;
+  --workflow-tab-max: 240px;
+}
+
 html,
 body {
   background: var(--color-bg);
@@ -48,4 +57,32 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 1px;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(var(--workspace-tray-min), var(--workspace-tray))
+    minmax(0, 1fr)
+    minmax(var(--workspace-inspector-min), var(--workspace-inspector));
+}
+
+@media (max-width: 1100px) {
+  .workspace-grid {
+    grid-template-columns: minmax(var(--workspace-tray-min), var(--workspace-tray)) minmax(0, 1fr);
+  }
+
+  .workspace-grid__inspector {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .workspace-grid__tray {
+    display: none;
+  }
 }

@@ -39,11 +39,15 @@ export function Canvas({
   positions,
   findings,
   handlers,
+  canUndoMove,
+  onUndoMove,
 }: {
   model: Workflow;
   positions: Record<string, { x: number; y: number }>;
   findings: LintFinding[];
   handlers: CanvasHandlers;
+  canUndoMove: boolean;
+  onUndoMove: () => void;
 }) {
   const instanceRef = useRef<ReactFlowInstance | null>(null);
 
@@ -147,6 +151,16 @@ export function Canvas({
         }
       }}
     >
+      <button
+        type="button"
+        onClick={onUndoMove}
+        disabled={!canUndoMove}
+        aria-label="Undo move"
+        title="Restore node positions before the last move"
+        className="absolute left-3 top-3 z-10 rounded-md border border-border-strong bg-surface/95 px-2.5 py-1.5 font-mono text-[10.5px] text-ink-muted shadow-sm hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Undo move
+      </button>
       <ReactFlow
         nodes={nodes}
         edges={edges}
