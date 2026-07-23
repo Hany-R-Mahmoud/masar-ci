@@ -36,7 +36,7 @@ MasarCI is a dark, dense CI/CD command surface: quiet, technical, and readable u
 - Left sidebar: builder resources; lower section owns recent workflows.
 - Center: canvas; right: YAML/security.
 - Body and each long panel own scroll; grid/flex children use `min-h-0`.
-- At ≤1100px the inspector yields to the canvas; at ≤760px the resource tray yields as well, leaving the workflow canvas usable without shell clipping.
+- At ≤1100px the inspector yields to the canvas; at ≤760px the resource tray and inspector yield to the canvas, leaving the workflow canvas usable without shell clipping. Mobile workspace buttons reopen each panel as a full-width drawer over the canvas.
 
 ## 5. Components
 
@@ -53,6 +53,13 @@ MasarCI is a dark, dense CI/CD command surface: quiet, technical, and readable u
 - States: empty, active, hover, focus, remove.
 - Accessibility: labelled buttons; no color-only active state.
 - Layout: sidebar stack; sidebar scroll owner.
+
+### Landing hero media
+
+- Structure: full-bleed video inside the stage, with the existing status and workflow labels layered above it.
+- States: playing, reduced-motion/static fallback, remote-media failure fallback.
+- Accessibility: decorative media is `aria-hidden`; the surrounding hero copy carries the product meaning.
+- Treatment: screen-blended graphite/amber motion with edge fades; no standalone media border.
 
 ## 6. Motion & Interaction
 

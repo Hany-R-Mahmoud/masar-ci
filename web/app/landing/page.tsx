@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { WebGLFlowHero } from "@/components/WebGLFlowHero";
+import { LandingHeroMedia } from "@/components/LandingHeroMedia";
 import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -49,7 +49,7 @@ export default function LandingPage() {
             <div className="landing-meta"><span><b>01</b> / visual workflow</span><span><b>02</b> / security context</span><span><b>03</b> / readable YAML</span></div>
           </div>
           <div className="landing-stage-wrap">
-            <WebGLFlowHero />
+            <LandingHeroMedia />
             <img className="landing-logo-tile" src="/masar-ci.png" alt="MasarCI logo" />
             <div className="landing-signal"><b>PATH STATUS</b><br />trigger → build → deploy</div>
           </div>

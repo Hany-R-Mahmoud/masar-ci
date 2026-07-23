@@ -32,7 +32,7 @@ export function StepEditor({
     const trigger = model.on[selection.triggerIndex ?? 0];
     if (!trigger) return null;
     return (
-      <aside className="absolute right-0 top-0 bottom-0 w-[340px] bg-surface border-l border-border-strong z-20 flex flex-col shadow-2xl">
+      <aside className="step-editor-panel absolute right-0 top-0 bottom-0 w-[340px] bg-surface border-l border-border-strong z-20 flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-4 h-12 border-b border-border bg-surface-2">
           <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-faint">Trigger editor</span>
           <button onClick={onClose} className="text-ink-faint hover:text-ink text-sm px-2 cursor-pointer" aria-label="close">✕</button>
@@ -51,7 +51,7 @@ export function StepEditor({
   const step = selection.type === "step" ? job.steps.find((s) => s.id === selection.stepId) : undefined;
 
   return (
-    <aside className="absolute right-0 top-0 bottom-0 w-[340px] bg-surface border-l border-border-strong z-20 flex flex-col shadow-2xl">
+    <aside className="step-editor-panel absolute right-0 top-0 bottom-0 w-[340px] bg-surface border-l border-border-strong z-20 flex flex-col shadow-2xl">
       <div className="flex items-center justify-between px-4 h-12 border-b border-border bg-surface-2">
         <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-faint">
           {selection.type === "step" ? "Step editor" : "Job editor"}

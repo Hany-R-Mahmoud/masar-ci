@@ -41,6 +41,7 @@ export default function Page() {
   const [workspace, setWorkspace] = useState<WorkspaceState>(() => createWorkspace(createSampleWorkflow(), "node-test-and-docker"));
   const [hydrated, setHydrated] = useState(false);
   const [selection, setSelection] = useState<Selection | null>(null);
+  const [mobilePanel, setMobilePanel] = useState<"resources" | "yaml" | null>(null);
   const [importing, setImporting] = useState(false);
   const [importText, setImportText] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
@@ -316,36 +317,47 @@ export default function Page() {
     .map((tab) => ({ id: tab.id, name: tab.workflow.name, dirty: generateYaml(tab.workflow) !== tab.savedYaml }));
   return (
     <div className="flex h-[100dvh] min-h-0 flex-col">
-      <header className="flex items-center gap-3.5 px-4 h-12 bg-surface border-b border-border">
-        <span className="font-mono text-base font-medium tracking-tight">
+      <header className="workstation-header flex items-center gap-3.5 px-4 h-12 bg-surface border-b border-border">
+        <span className="workstation-header__brand font-mono text-base font-medium tracking-tight">
           masar<span className="text-accent">·</span>ci
         </span>
         <input
           value={workflow.name}
           onChange={(e) => setWorkflow((p) => ({ ...p, name: e.target.value }))}
           aria-label="workflow file name"
-          className="bg-transparent border border-border text-ink font-mono text-[12.5px] px-2.5 py-1.5 rounded-md w-[248px] focus:outline-1 focus:outline-accent"
+          className="workstation-header__name bg-transparent border border-border text-ink font-mono text-[12.5px] px-2.5 py-1.5 rounded-md w-[248px] focus:outline-1 focus:outline-accent"
         />
-        <span className="flex-1" />
-        <span className={cn("inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-[0.04em] px-2.5 py-1 rounded-full border", state.cls)}>
+        <span className="workstation-header__spacer flex-1" />
+        <span className={cn("workstation-header__status inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-[0.04em] px-2.5 py-1 rounded-full border", state.cls)}>
           <span className="w-[7px] h-[7px] rounded-full bg-current" />
           {state.label}
         </span>
-        <button onClick={copyYaml} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
-          Copy
-        </button>
-        <button onClick={openImport} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
-          Import
-        </button>
-        <button onClick={downloadYaml} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md bg-accent text-[oklch(0.16_0.02_52)] border border-transparent cursor-pointer">
-          Download .yml
-        </button>
-        <button onClick={newWorkflow} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
-          New
-        </button>
+        <div className="workstation-header__actions flex items-center gap-2">
+          <button onClick={copyYaml} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
+            Copy
+          </button>
+          <button onClick={openImport} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
+            Import
+          </button>
+          <button onClick={downloadYaml} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md bg-accent text-[oklch(0.16_0.02_52)] border border-transparent cursor-pointer">
+            Download .yml
+          </button>
+          <button onClick={newWorkflow} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
+            New
+          </button>
+        </div>
       </header>
 
       <WorkflowTabs tabs={openTabs} activeId={workspace.activeId} onSelect={activateWorkflow} onClose={closeWorkflow} onNew={newWorkflow} />
+
+      <div className="mobile-workspace-tools" aria-label="Mobile workspace panels">
+        <button type="button" aria-pressed={mobilePanel === "resources"} onClick={() => setMobilePanel(mobilePanel === "resources" ? null : "resources")}>
+          Resources
+        </button>
+        <button type="button" aria-pressed={mobilePanel === "yaml"} onClick={() => setMobilePanel(mobilePanel === "yaml" ? null : "yaml")}>
+          YAML &amp; security
+        </button>
+      </div>
 
       <div
         id="workflow-workspace-panel"
@@ -371,6 +383,21 @@ export default function Page() {
             onChange={setWorkflow}
             onClose={() => setSelection(null)}
           />
+        )}
+        {mobilePanel && (
+          <aside className="mobile-workspace-drawer" aria-label={mobilePanel === "resources" ? "Workflow resources" : "YAML and security"}>
+            <div className="mobile-workspace-drawer__header">
+              <span>{mobilePanel === "resources" ? "Resources" : "YAML & security"}</span>
+              <button type="button" onClick={() => setMobilePanel(null)} aria-label="Close mobile panel">×</button>
+            </div>
+            <div className="mobile-workspace-drawer__content">
+              {mobilePanel === "resources" ? (
+                <Tray onTemplate={loadTemplate} onAddItem={addItem} recent={recentTabs} onRecent={activateWorkflow} activeId={workspace.activeId} />
+              ) : (
+                <YamlLintPanel yaml={yaml} findings={findings} workflow={workflow} onFix={onFix} onCopy={copyYaml} />
+              )}
+            </div>
+          </aside>
         )}
       </div>
       <ImportModal
