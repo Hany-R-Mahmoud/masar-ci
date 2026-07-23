@@ -49,4 +49,57 @@ describe("YAML import (parseYaml)", () => {
     expect(steps[0].action!.isSha).toBe(false);
     expect(steps[1].action!.isSha).toBe(true);
   });
+
+  it("round-trips schedule and workflow_dispatch inputs", () => {
+    const yaml = [
+      "name: scheduled",
+      "on:",
+      "  schedule:",
+      "    - cron: 0 5 * * *",
+      "  workflow_dispatch:",
+      "    inputs:",
+      "      environment:",
+      "        description: Deploy target",
+      "        required: true",
+      "        default: staging",
+      "        type: choice",
+      "        options: [staging, production]",
+      "jobs:",
+      "  build:",
+      "    runs-on: ubuntu-latest",
+      "    steps: []",
+    ].join("\n");
+    const parsed = parseYaml(yaml);
+    const schedule = parsed.on.find((trigger) => trigger.event === "schedule");
+    const dispatch = parsed.on.find((trigger) => trigger.event === "workflow_dispatch");
+    expect(schedule?.schedules).toEqual([{ cron: "0 5 * * *" }]);
+    expect(dispatch?.inputs?.environment).toMatchObject({ required: true, default: "staging", type: "choice" });
+    expect(generateYaml(parsed)).toContain("cron: 0 5 * * *");
+    expect(generateYaml(parsed)).toContain("description: Deploy target");
+  });
+
+  it("round-trips matrix and permissions without schema drift", () => {
+    const yaml = [
+      "name: matrix",
+      "on: push",
+      "permissions:",
+      "  contents: read",
+      "jobs:",
+      "  build:",
+      "    runs-on: ${{ matrix.os }}",
+      "    permissions:",
+      "      checks: none",
+      "    strategy:",
+      "      matrix:",
+      "        os: [ubuntu-latest, windows-latest]",
+      "    steps: []",
+    ].join("\n");
+    const parsed = parseYaml(yaml);
+    expect(parsed.permissions).toEqual({ contents: "read" });
+    expect(parsed.jobs[0].permissions).toEqual({ checks: "none" });
+    expect(parsed.jobs[0].strategy?.matrix.os).toEqual(["ubuntu-latest", "windows-latest"]);
+    const regenerated = parseYaml(generateYaml(parsed));
+    expect(regenerated.jobs[0].strategy?.matrix.os).toEqual(["ubuntu-latest", "windows-latest"]);
+    expect(regenerated.jobs[0].permissions).toEqual({ checks: "none" });
+  });
 });

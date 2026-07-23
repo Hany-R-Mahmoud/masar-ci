@@ -21,7 +21,13 @@ function TriggerNodeBase({ data }: { data: TriggerNodeData }) {
       </span>
       <span className="font-mono text-xs font-semibold text-ink">on: {t.event}</span>
       <span className="font-mono text-[10.5px] text-accent">
-        {t.branches?.length ? `branches: [${t.branches.join(", ")}]` : ""}
+        {t.event === "schedule" && t.schedules?.length
+          ? `cron: ${t.schedules[0].cron}`
+          : t.event === "workflow_dispatch" && t.inputs
+            ? `inputs: ${Object.keys(t.inputs).length}`
+            : t.branches?.length
+              ? `branches: [${t.branches.join(", ")}]`
+              : ""}
       </span>
       {/* source handle → jobs */}
       <Handle type="source" position={Position.Right} className="!bg-accent !border-bg !w-2 !h-2" />

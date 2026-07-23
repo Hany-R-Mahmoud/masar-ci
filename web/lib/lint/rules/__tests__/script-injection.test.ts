@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createWorkflow, addJob, addStep } from "@/lib/model/factory";
 import { lint } from "@/lib/lint/lint";
+import { generateYaml } from "@/lib/generate/yaml";
 import type { Workflow } from "@/lib/model/types";
 
 describe("Security linter · spec §16 security test", () => {
@@ -19,6 +20,10 @@ describe("Security linter · spec §16 security test", () => {
 
     expect(crit, "INJECT-001 finding should exist").toBeDefined();
     expect(crit!.severity).toBe("critical");
+    expect(crit!.id).toContain("INJECT-001");
+    expect(crit!.location?.startLine).toBeGreaterThan(0);
+    expect(crit!.location?.endLine).toBeGreaterThanOrEqual(crit!.location!.startLine);
+    expect(generateYaml(w).split("\n")[crit!.location!.startLine - 1]).toContain("- name: echo title");
 
     // auto-fix must hoist the untrusted ref into an env: intermediary and
     // reference the shell variable (either $TITLE or ${TITLE}).
@@ -27,5 +32,6 @@ describe("Security linter · spec §16 security test", () => {
     expect(step.env?.TITLE).toContain("github.event.issue.title");
     expect(step.run).toMatch(/\$\{?TITLE\}?/);
     expect(step.run).not.toContain("${{ github.event.issue.title }}");
+    expect(generateYaml(crit!.autoFix!(w))).toBe(generateYaml(fixed));
   });
 });

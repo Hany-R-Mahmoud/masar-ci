@@ -13,6 +13,16 @@ export interface Trigger {
   event: TriggerEvent;
   branches?: string[];
   paths?: string[];
+  schedules?: { cron: string }[];
+  inputs?: Record<string, WorkflowDispatchInput>;
+}
+
+export interface WorkflowDispatchInput {
+  description?: string;
+  required?: boolean;
+  default?: string;
+  type?: "boolean" | "choice" | "environment" | "string";
+  options?: string[];
 }
 
 export type StepKind = "action" | "run";

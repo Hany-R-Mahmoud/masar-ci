@@ -3,7 +3,7 @@
 import { ACTION_PRESETS } from "@/lib/sample";
 import { TEMPLATES } from "@/lib/templates";
 
-const TRIGGERS = ["push", "pull_request", "workflow_dispatch"];
+const TRIGGERS = ["push", "pull_request", "workflow_dispatch", "schedule"];
 const JOBS = ["build", "test", "deploy", "lint"];
 
 function dnd(payload: object) {

@@ -64,8 +64,15 @@ function JobNodeBase({ data }: { data: JobNodeData }) {
               )}
             >
               {f && (
-                <span className="absolute -right-1.5 -top-1.5 grid h-[18px] w-[18px] place-items-center rounded-full bg-critical border-2 border-bg font-mono text-[11px] font-bold text-white">
-                  !
+                <span
+                  className={cn(
+                    "absolute -right-1.5 -top-1.5 grid h-[18px] w-[18px] place-items-center rounded-full border-2 border-bg font-mono text-[10px] font-bold",
+                    f.severity === "critical" ? "bg-critical text-white" : f.severity === "warning" ? "bg-warning text-black" : "bg-surface text-ink",
+                  )}
+                  aria-label={`${f.severity} finding: ${f.title}`}
+                  title={`${f.severity}: ${f.title}`}
+                >
+                  {f.severity === "critical" ? "!" : f.severity === "warning" ? "~" : "i"}
                 </span>
               )}
               <span className="grid h-[18px] w-[18px] place-items-center rounded bg-code-bg border border-border font-mono text-[9.5px] text-ink-muted">

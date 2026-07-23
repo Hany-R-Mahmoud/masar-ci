@@ -5,6 +5,7 @@ import type {
   Step,
   Trigger,
   TriggerEvent,
+  WorkflowDispatchInput,
   Workflow,
 } from "@/lib/model/types";
 
@@ -21,6 +22,12 @@ function parseTriggers(on: unknown): Trigger[] {
   const out: Trigger[] = [];
   const push = (event: string, cfg: unknown) => {
     const t: Trigger = { event: event as TriggerEvent };
+    if (event === "schedule" && Array.isArray(cfg)) {
+      t.schedules = cfg
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+        .map((item) => ({ cron: typeof item.cron === "string" ? item.cron : "" }))
+        .filter((item) => item.cron.length > 0);
+    }
     if (cfg && typeof cfg === "object") {
       const c = cfg as Record<string, unknown>;
       out_branches: {
@@ -32,6 +39,29 @@ function parseTriggers(on: unknown): Trigger[] {
       const p = c.paths;
       if (typeof p === "string") t.paths = [p];
       else if (Array.isArray(p)) t.paths = p.map(String);
+      if (event === "schedule" && Array.isArray(c.schedule)) {
+        t.schedules = c.schedule
+          .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+          .map((item) => ({ cron: typeof item.cron === "string" ? item.cron : "" }))
+          .filter((item) => item.cron.length > 0);
+      }
+      if (event === "workflow_dispatch" && c.inputs && typeof c.inputs === "object") {
+        const inputs: Record<string, WorkflowDispatchInput> = {};
+        for (const [name, raw] of Object.entries(c.inputs as Record<string, unknown>)) {
+          if (!raw || typeof raw !== "object") continue;
+          const value = raw as Record<string, unknown>;
+          inputs[name] = {
+            description: typeof value.description === "string" ? value.description : undefined,
+            required: typeof value.required === "boolean" ? value.required : undefined,
+            default: typeof value.default === "string" ? value.default : undefined,
+            type: ["boolean", "choice", "environment", "string"].includes(String(value.type))
+              ? (value.type as WorkflowDispatchInput["type"])
+              : undefined,
+            options: Array.isArray(value.options) ? value.options.map(String) : undefined,
+          };
+        }
+        if (Object.keys(inputs).length) t.inputs = inputs;
+      }
     }
     out.push(t);
   };

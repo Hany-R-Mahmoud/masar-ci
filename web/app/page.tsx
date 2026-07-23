@@ -18,6 +18,7 @@ import {
 import { Tray } from "@/components/Tray";
 import { Canvas, type CanvasHandlers } from "@/components/Canvas";
 import { YamlLintPanel } from "@/components/YamlLintPanel";
+import { CanvasErrorBoundary } from "@/components/CanvasErrorBoundary";
 import { StepEditor, type Selection } from "@/components/StepEditor";
 import { ImportModal } from "@/components/ImportModal";
 import { cn } from "@/lib/cn";
@@ -39,6 +40,7 @@ export default function Page() {
   const [importing, setImporting] = useState(false);
   const [importText, setImportText] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
+  const lastValidWorkflow = useRef<Workflow>(createSampleWorkflow());
   const skipSave = useRef(true);
 
   const yaml = useMemo(() => generateYaml(workflow), [workflow]);
@@ -91,6 +93,7 @@ export default function Page() {
         setImporting(true);
         return;
       }
+      lastValidWorkflow.current = workflow;
       setWorkflow(w);
       setPositions({});
       setSelection(null);
@@ -132,7 +135,7 @@ export default function Page() {
     onNodeDragStop: (id, x, y) => setPositions((p) => ({ ...p, [id]: { x, y } })),
     onConnectNeeds: (source, target) =>
       setWorkflow((prev) => {
-        if (source === "trigger-0" || source === target) return prev;
+        if (source.startsWith("trigger-") || source === target) return prev;
         const tj = prev.jobs.find((j) => j.id === target);
         if (!tj || tj.needs.includes(source)) return prev;
         return setJobNeedsClone(prev, target, [...tj.needs, source]);
@@ -160,6 +163,7 @@ export default function Page() {
       }),
     onNodeClick: (id, type) => {
       if (type === "job") setSelection({ type: "job", jobId: id });
+      if (type === "trigger") setSelection({ type: "trigger", jobId: id, triggerIndex: Number(id.replace("trigger-", "")) });
     },
     onStepClick: (jobId, stepId) => setSelection({ type: "step", jobId, stepId }),
     onDeleteStep: (jobId, stepId) => setWorkflow((prev) => removeStepClone(prev, jobId, stepId)),
@@ -202,8 +206,10 @@ export default function Page() {
 
       <div className="grid grid-cols-[232px_1fr_430px] flex-1 min-h-0 relative">
         <Tray onTemplate={loadTemplate} onAddItem={addItem} />
-        <Canvas model={workflow} positions={positions} findings={findings} handlers={handlers} />
-        <YamlLintPanel yaml={yaml} findings={findings} onFix={onFix} onCopy={copyYaml} />
+        <CanvasErrorBoundary onRestore={() => setWorkflow(lastValidWorkflow.current)}>
+          <Canvas model={workflow} positions={positions} findings={findings} handlers={handlers} />
+        </CanvasErrorBoundary>
+        <YamlLintPanel yaml={yaml} findings={findings} workflow={workflow} onFix={onFix} onCopy={copyYaml} />
         {selection && (
           <StepEditor
             selection={selection}

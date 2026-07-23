@@ -3,12 +3,14 @@ import type { Workflow } from "@/lib/model/types";
 export type Severity = "critical" | "warning" | "info";
 
 export interface LintFinding {
+  id?: string;
   ruleId: string;
   severity: Severity;
   title: string;
   message: string;
   targetJobId?: string;
   targetStepId?: string;
+  location?: { startLine: number; endLine: number };
   autoFix?: (w: Workflow) => Workflow;
 }
 

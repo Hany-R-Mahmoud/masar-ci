@@ -1,8 +1,12 @@
-import type { ActionRef, Step, Trigger, Workflow } from "./types";
+import type { ActionRef, Job, Step, Trigger, Workflow } from "./types";
 
 /** Replace the workflow's trigger set (single trigger supported in the builder). */
 export function setTrigger(w: Workflow, trigger: Trigger): Workflow {
-  return { ...w, on: [trigger] };
+  const existing = w.on.findIndex((item) => item.event === trigger.event);
+  if (existing < 0) return { ...w, on: [...w.on, trigger] };
+  const on = [...w.on];
+  on[existing] = trigger;
+  return { ...w, on };
 }
 
 /** Append a job and return a clone (non-mutating ops for the UI). */
@@ -97,13 +101,15 @@ export function setJobNeedsClone(w: Workflow, jobId: string, needs: string[]): W
 export function updateJobClone(
   w: Workflow,
   jobId: string,
-  patch: Partial<{ name: string; runsOn: string }>,
+  patch: Partial<Pick<Job, "name" | "runsOn" | "strategy" | "permissions">>,
 ): Workflow {
   const c = cloneWorkflow(w);
   const j = c.jobs.find((x) => x.id === jobId);
   if (j) {
     if (patch.name) j.name = patch.name;
     if (patch.runsOn) j.runsOn = patch.runsOn;
+    if (patch.strategy !== undefined) j.strategy = patch.strategy;
+    if (patch.permissions !== undefined) j.permissions = patch.permissions;
   }
   return c;
 }

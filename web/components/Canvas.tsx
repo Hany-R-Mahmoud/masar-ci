@@ -49,20 +49,26 @@ export function Canvas({
 
   const stepFindings = useMemo(() => {
     const m = new Map<string, LintFinding>();
-    for (const f of findings) if (f.targetStepId) m.set(f.targetStepId, f);
+    const rank = { critical: 0, warning: 1, info: 2 };
+    for (const f of findings) {
+      if (!f.targetStepId) continue;
+      const current = m.get(f.targetStepId);
+      if (!current || rank[f.severity] < rank[current.severity]) m.set(f.targetStepId, f);
+    }
     return m;
   }, [findings]);
 
   const nodes: Node[] = useMemo(() => {
     const list: Node[] = [];
-    if (model.on.length) {
+    model.on.forEach((trigger, triggerIndex) => {
+      const id = `trigger-${triggerIndex}`;
       list.push({
-        id: "trigger-0",
+        id,
         type: "trigger",
-        position: positions["trigger-0"] ?? { x: 24, y: 90 },
-        data: { trigger: model.on[0] },
+        position: positions[id] ?? { x: 24, y: 90 + triggerIndex * 110 },
+        data: { trigger },
       });
-    }
+    });
     model.jobs.forEach((job, i) => {
       const data: JobNodeData = {
         job,
@@ -84,13 +90,15 @@ export function Canvas({
   const edges: Edge[] = useMemo(() => {
     const list: Edge[] = [];
     if (model.on.length && model.jobs.length) {
-      list.push({
-        id: "e-trigger",
-        source: "trigger-0",
-        target: model.jobs[0].id,
-        type: "smoothstep",
-        style: { stroke: "var(--color-border-strong)", strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: "var(--color-border-strong)" },
+      model.on.forEach((_, triggerIndex) => {
+        list.push({
+          id: `e-trigger-${triggerIndex}`,
+          source: `trigger-${triggerIndex}`,
+          target: model.jobs[0].id,
+          type: "smoothstep",
+          style: { stroke: "var(--color-border-strong)", strokeWidth: 2 },
+          markerEnd: { type: MarkerType.ArrowClosed, color: "var(--color-border-strong)" },
+        });
       });
     }
     for (const job of model.jobs) {
