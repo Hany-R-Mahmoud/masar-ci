@@ -1,0 +1,40 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]: masar·ci
+      - textbox "workflow file name" [ref=e5]: node-test-and-docker
+      - generic [ref=e6]: Warnings Found · 1
+      - button "Copy" [ref=e8] [cursor=pointer]
+      - button "Import" [ref=e9] [cursor=pointer]
+      - button "Download .yml" [ref=e10] [cursor=pointer]
+      - button "New" [ref=e11] [cursor=pointer]
+    - navigation "Open workflows" [ref=e12]:
+      - tablist [ref=e13]:
+        - generic [ref=e14]:
+          - tab "node-test-and-docker" [selected] [ref=e15]:
+            - generic [ref=e17]: node-test-and-docker
+          - button "Close node-test-and-docker" [ref=e18]: ×
+      - button "New workflow tab" [ref=e19]: +
+    - tabpanel "node-test-and-docker" [ref=e20]:
+      - generic [ref=e22]:
+        - button "Undo move" [disabled] [ref=e23]
+        - application [ref=e24]:
+          - generic [ref=e26]:
+            - generic:
+              - generic:
+                - img
+          - img
+          - generic "Control Panel" [ref=e27]:
+            - button "Zoom In" [ref=e28] [cursor=pointer]:
+              - img [ref=e29]
+            - button "Zoom Out" [ref=e31] [cursor=pointer]:
+              - img [ref=e32]
+            - button "Fit View" [ref=e34] [cursor=pointer]:
+              - img [ref=e35]
+            - button "Toggle Interactivity" [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+          - link "React Flow attribution" [ref=e41] [cursor=pointer]:
+            - /url: https://reactflow.dev/attribution
+            - text: React Flow
+  - button "Open Next.js Dev Tools" [ref=e48] [cursor=pointer]:
+    - img [ref=e49]

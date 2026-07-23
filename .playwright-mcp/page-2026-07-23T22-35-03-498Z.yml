@@ -1,0 +1,274 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]: masar·ci
+      - textbox "workflow file name" [ref=e5]: node-test-and-docker
+      - generic [ref=e6]: Warnings Found · 1
+      - generic [ref=e8]:
+        - button "Copy" [ref=e9] [cursor=pointer]
+        - button "Import" [ref=e10] [cursor=pointer]
+        - button "Download .yml" [ref=e11] [cursor=pointer]
+        - button "New" [ref=e12] [cursor=pointer]
+    - navigation "Open workflows" [ref=e13]:
+      - tablist [ref=e14]:
+        - generic [ref=e15]:
+          - tab "node-test-and-docker" [selected] [ref=e16]:
+            - generic [ref=e18]: node-test-and-docker
+          - button "Close node-test-and-docker" [ref=e19]: ×
+      - button "New workflow tab" [ref=e20]: +
+    - tabpanel "node-test-and-docker" [ref=e21]:
+      - complementary [ref=e23]:
+        - generic [ref=e24]:
+          - heading "Triggers" [level=4] [ref=e25]
+          - generic [ref=e26]:
+            - button "Add push to canvas" [ref=e27]:
+              - generic [ref=e29]: push
+              - generic [ref=e30]: "on:"
+            - button "Add pull_request to canvas" [ref=e31]:
+              - generic [ref=e33]: pull_request
+              - generic [ref=e34]: "on:"
+            - button "Add workflow_dispatch to canvas" [ref=e35]:
+              - generic [ref=e37]: workflow_dispatch
+              - generic [ref=e38]: "on:"
+            - button "Add schedule to canvas" [ref=e39]:
+              - generic [ref=e41]: schedule
+              - generic [ref=e42]: "on:"
+        - generic [ref=e43]:
+          - heading "Jobs" [level=4] [ref=e44]
+          - generic [ref=e45]:
+            - button "Add build to canvas" [ref=e46]:
+              - generic [ref=e48]: build
+            - button "Add test to canvas" [ref=e49]:
+              - generic [ref=e51]: test
+            - button "Add deploy to canvas" [ref=e52]:
+              - generic [ref=e54]: deploy
+            - button "Add lint to canvas" [ref=e55]:
+              - generic [ref=e57]: lint
+        - generic [ref=e58]:
+          - heading "Action Marketplace" [level=4] [ref=e59]
+          - generic [ref=e60]:
+            - button "Add actions/checkout to canvas" [ref=e61]:
+              - generic [ref=e63]: actions/checkout
+              - generic [ref=e64]: "@v7"
+            - button "Add actions/setup-node to canvas" [ref=e65]:
+              - generic [ref=e67]: actions/setup-node
+              - generic [ref=e68]: "@v7"
+            - button "Add actions/setup-python to canvas" [ref=e69]:
+              - generic [ref=e71]: actions/setup-python
+              - generic [ref=e72]: "@v7"
+            - button "Add actions/cache to canvas" [ref=e73]:
+              - generic [ref=e75]: actions/cache
+              - generic [ref=e76]: "@v6"
+            - button "Add actions/upload-artifact to canvas" [ref=e77]:
+              - generic [ref=e79]: actions/upload-artifact
+              - generic [ref=e80]: "@v7"
+            - button "Add docker/build-push-action to canvas" [ref=e81]:
+              - generic [ref=e83]: docker/build-push-action
+              - generic [ref=e84]: "@v7"
+        - generic [ref=e85]:
+          - heading "Regional Templates" [level=4] [ref=e86]
+          - generic [ref=e87]:
+            - button "AWS ECR · Bahrain" [ref=e88] [cursor=pointer]:
+              - generic [ref=e90]: AWS ECR · Bahrain
+            - button "Oracle Cloud · Jeddah" [ref=e91] [cursor=pointer]:
+              - generic [ref=e93]: Oracle Cloud · Jeddah
+            - button "Salla deploy" [ref=e94] [cursor=pointer]:
+              - generic [ref=e96]: Salla deploy
+        - generic [ref=e97]:
+          - heading "Recent workflows" [level=4] [ref=e98]
+          - button "node-test-and-docker" [ref=e100]:
+            - generic [ref=e102]: node-test-and-docker
+      - generic [ref=e104]:
+        - button "Undo move" [disabled] [ref=e105]
+        - application [ref=e106]:
+          - generic [ref=e108]:
+            - generic:
+              - generic:
+                - img
+                - img:
+                  - group "Edge from trigger-0 to build" [ref=e109] [cursor=pointer]
+                - img:
+                  - group "Edge from build to deploy"
+              - generic:
+                - group [ref=e112]:
+                  - 'group "Trigger: on push, branches main" [ref=e113]':
+                    - generic [ref=e114]: Trigger
+                    - generic [ref=e115]: "on: push"
+                    - generic [ref=e116]: "branches: [main]"
+                - group [ref=e118]:
+                  - group "Job build on ubuntu-latest, 3 steps" [ref=e119]:
+                    - generic [ref=e121]:
+                      - generic [ref=e123]: build
+                      - generic [ref=e124]: ubuntu-latest
+                    - generic [ref=e125]:
+                      - generic [ref=e126] [cursor=pointer]:
+                        - generic [ref=e127]: ✓
+                        - generic [ref=e128]:
+                          - text: "uses: actions/checkout"
+                          - generic [ref=e129]: "@v7"
+                        - button "delete step" [ref=e130]: ✕
+                      - generic [ref=e131] [cursor=pointer]:
+                        - generic [ref=e132]: ✓
+                        - generic [ref=e133]:
+                          - text: "uses: actions/setup-node"
+                          - generic [ref=e134]: "@v7"
+                        - button "delete step" [ref=e135]: ✕
+                      - generic [ref=e136] [cursor=pointer]:
+                        - generic [ref=e137]: $_
+                        - generic [ref=e138]: "run: npm ci && npm test"
+                        - button "delete step" [ref=e139]: ✕
+                - group [ref=e141]:
+                  - group "Job deploy on ubuntu-latest, needs build, 3 steps" [ref=e142]:
+                    - generic [ref=e144]:
+                      - generic [ref=e146]: deploy
+                      - generic [ref=e147]: "needs: [build]"
+                      - generic [ref=e148]: ubuntu-latest
+                    - generic [ref=e149]:
+                      - generic [ref=e150] [cursor=pointer]:
+                        - generic [ref=e151]: ✓
+                        - generic [ref=e152]:
+                          - text: "uses: docker/login-action"
+                          - generic [ref=e153]: "@v4"
+                        - button "delete step" [ref=e154]: ✕
+                      - generic [ref=e155] [cursor=pointer]:
+                        - 'generic "critical finding: Script injection via untrusted input" [ref=e156]': "!"
+                        - generic [ref=e157]: $_
+                        - generic [ref=e158]: "run: echo \"${{ github.event.issue.title }}\""
+                        - button "delete step" [ref=e159]: ✕
+                      - generic [ref=e160] [cursor=pointer]:
+                        - generic [ref=e161]: ✓
+                        - generic [ref=e162]:
+                          - text: "uses: docker/build-push-action"
+                          - generic [ref=e163]: "@v7"
+                        - button "delete step" [ref=e164]: ✕
+          - img
+          - generic "Control Panel" [ref=e166]:
+            - button "Zoom In" [ref=e167] [cursor=pointer]:
+              - img [ref=e168]
+            - button "Zoom Out" [ref=e170] [cursor=pointer]:
+              - img [ref=e171]
+            - button "Fit View" [ref=e173] [cursor=pointer]:
+              - img [ref=e174]
+            - button "Toggle Interactivity" [ref=e176] [cursor=pointer]:
+              - img [ref=e177]
+          - link "React Flow attribution" [ref=e180] [cursor=pointer]:
+            - /url: https://reactflow.dev?utm_source=attribution
+            - text: React Flow
+      - generic [ref=e183]:
+        - generic [ref=e184]:
+          - generic [ref=e185]:
+            - generic [ref=e186]: deploy.yml
+            - button "copy" [ref=e187] [cursor=pointer]
+          - generic [ref=e188]:
+            - generic [ref=e189]:
+              - generic [ref=e190]: "1"
+              - generic [ref=e191]: "name: node-test-and-docker"
+            - generic [ref=e192]:
+              - generic [ref=e193]: "2"
+              - generic [ref=e194]: "'on':"
+            - generic [ref=e195]:
+              - generic [ref=e196]: "3"
+              - generic [ref=e197]: "push:"
+            - generic [ref=e198]:
+              - generic [ref=e199]: "4"
+              - generic [ref=e200]: "branches:"
+            - generic [ref=e201]:
+              - generic [ref=e202]: "5"
+              - generic [ref=e203]: "- main"
+            - generic [ref=e204]:
+              - generic [ref=e205]: "6"
+              - generic [ref=e206]: "permissions:"
+            - generic [ref=e207]:
+              - generic [ref=e208]: "7"
+              - generic [ref=e209]: "contents: read"
+            - generic [ref=e210]:
+              - generic [ref=e211]: "8"
+              - generic [ref=e212]: "jobs:"
+            - generic [ref=e213]:
+              - generic [ref=e214]: "9"
+              - generic [ref=e215]: "build:"
+            - generic [ref=e216]:
+              - generic [ref=e217]: "10"
+              - generic [ref=e218]: "runs-on: ubuntu-latest"
+            - generic [ref=e219]:
+              - generic [ref=e220]: "11"
+              - generic [ref=e221]: "steps:"
+            - generic [ref=e222]:
+              - generic [ref=e223]: "12"
+              - generic [ref=e224]: "- name: Checkout"
+            - generic [ref=e225]:
+              - generic [ref=e226]: "13"
+              - generic [ref=e227]: "uses: actions/checkout@v7"
+            - generic [ref=e228]:
+              - generic [ref=e229]: "14"
+              - generic [ref=e230]: "- name: Setup Node"
+            - generic [ref=e231]:
+              - generic [ref=e232]: "15"
+              - generic [ref=e233]: "uses: actions/setup-node@v7"
+            - generic [ref=e234]:
+              - generic [ref=e235]: "16"
+              - generic [ref=e236]: "with:"
+            - generic [ref=e237]:
+              - generic [ref=e238]: "17"
+              - generic [ref=e239]: "node-version: '20'"
+            - generic [ref=e240]:
+              - generic [ref=e241]: "18"
+              - generic [ref=e242]: "- name: Install & test"
+            - generic [ref=e243]:
+              - generic [ref=e244]: "19"
+              - generic [ref=e245]: "run: npm ci && npm test"
+            - generic [ref=e246]:
+              - generic [ref=e247]: "20"
+              - generic [ref=e248]: "deploy:"
+            - generic [ref=e249]:
+              - generic [ref=e250]: "21"
+              - generic [ref=e251]: "runs-on: ubuntu-latest"
+            - generic [ref=e252]:
+              - generic [ref=e253]: "22"
+              - generic [ref=e254]: "needs:"
+            - generic [ref=e255]:
+              - generic [ref=e256]: "23"
+              - generic [ref=e257]: "- build"
+            - generic [ref=e258]:
+              - generic [ref=e259]: "24"
+              - generic [ref=e260]: "steps:"
+            - generic [ref=e261]:
+              - generic [ref=e262]: "25"
+              - generic [ref=e263]: "- name: Docker login"
+            - generic [ref=e264]:
+              - generic [ref=e265]: "26"
+              - generic [ref=e266]: "uses: docker/login-action@v4"
+            - generic [ref=e267]:
+              - generic [ref=e268]: "27"
+              - generic [ref=e269]: "- name: Echo issue title (vulnerable)"
+            - generic [ref=e270]:
+              - generic [ref=e271]: "28"
+              - generic [ref=e272]: "run: echo \"${{ github.event.issue.title }}\""
+            - generic [ref=e273]:
+              - generic [ref=e274]: "29"
+              - generic [ref=e275]: "- name: Build & push image"
+            - generic [ref=e276]:
+              - generic [ref=e277]: "30"
+              - generic [ref=e278]: "uses: docker/build-push-action@v7"
+            - generic [ref=e280]: "31"
+        - generic [ref=e281]:
+          - generic [ref=e282]:
+            - generic [ref=e283]: Security
+            - generic [ref=e284]: 1 findings
+          - generic [ref=e285]:
+            - button "all 1" [pressed] [ref=e286]
+            - button "critical 1" [ref=e287]
+            - button "warning 0" [ref=e288]
+            - button "info 0" [ref=e289]
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - generic [ref=e293]: critical
+              - generic [ref=e294]: INJECT-001
+              - generic [ref=e295]: L27–28
+              - generic [ref=e296]: deploy > d2
+            - generic [ref=e297]: Script injection via untrusted input
+            - generic [ref=e298]: "A `run:` block interpolates `github.event.issue.title` directly. These values are attacker-controlled — a crafted string executes arbitrary shell with the runner token. Hoist into a step-level `env:` variable and reference the shell variable."
+            - generic [ref=e299]:
+              - button "Preview diff" [ref=e300] [cursor=pointer]
+              - button "Auto-Fix" [ref=e301] [cursor=pointer]
+  - alert [ref=e302]

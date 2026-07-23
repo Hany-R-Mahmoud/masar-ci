@@ -1,0 +1,220 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]: masar·ci
+      - textbox "workflow file name" [ref=e5]: node-test-and-docker
+      - generic [ref=e6]: Warnings Found · 1
+      - generic [ref=e8]:
+        - button "Copy" [ref=e9] [cursor=pointer]
+        - button "Import" [ref=e10] [cursor=pointer]
+        - button "Download .yml" [ref=e11] [cursor=pointer]
+        - button "New" [ref=e12] [cursor=pointer]
+    - navigation "Open workflows" [ref=e13]:
+      - tablist [ref=e14]:
+        - generic [ref=e15]:
+          - tab "node-test-and-docker" [selected] [ref=e16]:
+            - generic [ref=e18]: node-test-and-docker
+          - button "Close node-test-and-docker" [ref=e19]: ×
+      - button "New workflow tab" [ref=e20]: +
+    - generic "Mobile workspace panels" [ref=e183]:
+      - button "Resources" [ref=e184]
+      - button "YAML & security" [active] [pressed] [ref=e185]
+    - tabpanel "node-test-and-docker" [ref=e21]:
+      - generic [ref=e104]:
+        - button "Undo move" [disabled] [ref=e105]
+        - application [ref=e106]:
+          - generic [ref=e108]:
+            - generic:
+              - generic:
+                - img
+                - img:
+                  - group "Edge from trigger-0 to build" [ref=e186] [cursor=pointer]
+                - img:
+                  - group "Edge from build to deploy"
+              - generic:
+                - group [ref=e112]:
+                  - 'group "Trigger: on push, branches main" [ref=e113]':
+                    - generic [ref=e114]: Trigger
+                    - generic [ref=e115]: "on: push"
+                    - generic [ref=e116]: "branches: [main]"
+                - group [ref=e118]:
+                  - group "Job build on ubuntu-latest, 3 steps" [ref=e119]:
+                    - generic [ref=e121]:
+                      - generic [ref=e123]: build
+                      - generic [ref=e124]: ubuntu-latest
+                    - generic [ref=e125]:
+                      - generic [ref=e126] [cursor=pointer]:
+                        - generic [ref=e127]: ✓
+                        - generic [ref=e128]:
+                          - text: "uses: actions/checkout"
+                          - generic [ref=e129]: "@v7"
+                        - button "delete step" [ref=e130]: ✕
+                      - generic [ref=e131] [cursor=pointer]:
+                        - generic [ref=e132]: ✓
+                        - generic [ref=e133]:
+                          - text: "uses: actions/setup-node"
+                          - generic [ref=e134]: "@v7"
+                        - button "delete step" [ref=e135]: ✕
+                      - generic [ref=e136] [cursor=pointer]:
+                        - generic [ref=e137]: $_
+                        - generic [ref=e138]: "run: npm ci && npm test"
+                        - button "delete step" [ref=e139]: ✕
+                - group [ref=e141]:
+                  - group "Job deploy on ubuntu-latest, needs build, 3 steps" [ref=e142]:
+                    - generic [ref=e144]:
+                      - generic [ref=e146]: deploy
+                      - generic [ref=e147]: "needs: [build]"
+                      - generic [ref=e148]: ubuntu-latest
+                    - generic [ref=e149]:
+                      - generic [ref=e150] [cursor=pointer]:
+                        - generic [ref=e151]: ✓
+                        - generic [ref=e152]:
+                          - text: "uses: docker/login-action"
+                          - generic [ref=e153]: "@v4"
+                        - button "delete step" [ref=e154]: ✕
+                      - generic [ref=e155] [cursor=pointer]:
+                        - 'generic "critical finding: Script injection via untrusted input" [ref=e156]': "!"
+                        - generic [ref=e157]: $_
+                        - generic [ref=e158]: "run: echo \"${{ github.event.issue.title }}\""
+                        - button "delete step" [ref=e159]: ✕
+                      - generic [ref=e160] [cursor=pointer]:
+                        - generic [ref=e161]: ✓
+                        - generic [ref=e162]:
+                          - text: "uses: docker/build-push-action"
+                          - generic [ref=e163]: "@v7"
+                        - button "delete step" [ref=e164]: ✕
+          - img
+          - generic "Control Panel" [ref=e166]:
+            - button "Zoom In" [ref=e167] [cursor=pointer]:
+              - img [ref=e168]
+            - button "Zoom Out" [ref=e170] [cursor=pointer]:
+              - img [ref=e171]
+            - button "Fit View" [ref=e173] [cursor=pointer]:
+              - img [ref=e174]
+            - button "Toggle Interactivity" [ref=e176] [cursor=pointer]:
+              - img [ref=e177]
+          - link "React Flow attribution" [ref=e180] [cursor=pointer]:
+            - /url: https://reactflow.dev?utm_source=attribution
+            - text: React Flow
+      - complementary "YAML and security" [ref=e189]:
+        - generic [ref=e190]:
+          - generic [ref=e191]: YAML & security
+          - button "Close mobile panel" [ref=e192]: ×
+        - generic [ref=e194]:
+          - generic [ref=e195]:
+            - generic [ref=e196]:
+              - generic [ref=e197]: deploy.yml
+              - button "copy" [ref=e198] [cursor=pointer]
+            - generic [ref=e199]:
+              - generic [ref=e200]:
+                - generic [ref=e201]: "1"
+                - generic [ref=e202]: "name: node-test-and-docker"
+              - generic [ref=e203]:
+                - generic [ref=e204]: "2"
+                - generic [ref=e205]: "'on':"
+              - generic [ref=e206]:
+                - generic [ref=e207]: "3"
+                - generic [ref=e208]: "push:"
+              - generic [ref=e209]:
+                - generic [ref=e210]: "4"
+                - generic [ref=e211]: "branches:"
+              - generic [ref=e212]:
+                - generic [ref=e213]: "5"
+                - generic [ref=e214]: "- main"
+              - generic [ref=e215]:
+                - generic [ref=e216]: "6"
+                - generic [ref=e217]: "permissions:"
+              - generic [ref=e218]:
+                - generic [ref=e219]: "7"
+                - generic [ref=e220]: "contents: read"
+              - generic [ref=e221]:
+                - generic [ref=e222]: "8"
+                - generic [ref=e223]: "jobs:"
+              - generic [ref=e224]:
+                - generic [ref=e225]: "9"
+                - generic [ref=e226]: "build:"
+              - generic [ref=e227]:
+                - generic [ref=e228]: "10"
+                - generic [ref=e229]: "runs-on: ubuntu-latest"
+              - generic [ref=e230]:
+                - generic [ref=e231]: "11"
+                - generic [ref=e232]: "steps:"
+              - generic [ref=e233]:
+                - generic [ref=e234]: "12"
+                - generic [ref=e235]: "- name: Checkout"
+              - generic [ref=e236]:
+                - generic [ref=e237]: "13"
+                - generic [ref=e238]: "uses: actions/checkout@v7"
+              - generic [ref=e239]:
+                - generic [ref=e240]: "14"
+                - generic [ref=e241]: "- name: Setup Node"
+              - generic [ref=e242]:
+                - generic [ref=e243]: "15"
+                - generic [ref=e244]: "uses: actions/setup-node@v7"
+              - generic [ref=e245]:
+                - generic [ref=e246]: "16"
+                - generic [ref=e247]: "with:"
+              - generic [ref=e248]:
+                - generic [ref=e249]: "17"
+                - generic [ref=e250]: "node-version: '20'"
+              - generic [ref=e251]:
+                - generic [ref=e252]: "18"
+                - generic [ref=e253]: "- name: Install & test"
+              - generic [ref=e254]:
+                - generic [ref=e255]: "19"
+                - generic [ref=e256]: "run: npm ci && npm test"
+              - generic [ref=e257]:
+                - generic [ref=e258]: "20"
+                - generic [ref=e259]: "deploy:"
+              - generic [ref=e260]:
+                - generic [ref=e261]: "21"
+                - generic [ref=e262]: "runs-on: ubuntu-latest"
+              - generic [ref=e263]:
+                - generic [ref=e264]: "22"
+                - generic [ref=e265]: "needs:"
+              - generic [ref=e266]:
+                - generic [ref=e267]: "23"
+                - generic [ref=e268]: "- build"
+              - generic [ref=e269]:
+                - generic [ref=e270]: "24"
+                - generic [ref=e271]: "steps:"
+              - generic [ref=e272]:
+                - generic [ref=e273]: "25"
+                - generic [ref=e274]: "- name: Docker login"
+              - generic [ref=e275]:
+                - generic [ref=e276]: "26"
+                - generic [ref=e277]: "uses: docker/login-action@v4"
+              - generic [ref=e278]:
+                - generic [ref=e279]: "27"
+                - generic [ref=e280]: "- name: Echo issue title (vulnerable)"
+              - generic [ref=e281]:
+                - generic [ref=e282]: "28"
+                - generic [ref=e283]: "run: echo \"${{ github.event.issue.title }}\""
+              - generic [ref=e284]:
+                - generic [ref=e285]: "29"
+                - generic [ref=e286]: "- name: Build & push image"
+              - generic [ref=e287]:
+                - generic [ref=e288]: "30"
+                - generic [ref=e289]: "uses: docker/build-push-action@v7"
+              - generic [ref=e291]: "31"
+          - generic [ref=e292]:
+            - generic [ref=e293]:
+              - generic [ref=e294]: Security
+              - generic [ref=e295]: 1 findings
+            - generic [ref=e296]:
+              - button "all 1" [pressed] [ref=e297]
+              - button "critical 1" [ref=e298]
+              - button "warning 0" [ref=e299]
+              - button "info 0" [ref=e300]
+            - generic [ref=e302]:
+              - generic [ref=e303]:
+                - generic [ref=e304]: critical
+                - generic [ref=e305]: INJECT-001
+                - generic [ref=e306]: L27–28
+                - generic [ref=e307]: deploy > d2
+              - generic [ref=e308]: Script injection via untrusted input
+              - generic [ref=e309]: "A `run:` block interpolates `github.event.issue.title` directly. These values are attacker-controlled — a crafted string executes arbitrary shell with the runner token. Hoist into a step-level `env:` variable and reference the shell variable."
+              - generic [ref=e310]:
+                - button "Preview diff" [ref=e311] [cursor=pointer]
+                - button "Auto-Fix" [ref=e312] [cursor=pointer]
+  - alert [ref=e182]

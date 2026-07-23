@@ -1,0 +1,41 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]: masar·ci
+    - textbox "workflow file name" [ref=e5]: node-test-and-docker
+    - generic [ref=e6]: Warnings Found · 1
+    - generic [ref=e8]:
+      - button "Copy" [ref=e9] [cursor=pointer]
+      - button "Import" [ref=e10] [cursor=pointer]
+      - button "Download .yml" [ref=e11] [cursor=pointer]
+      - button "New" [ref=e12] [cursor=pointer]
+  - navigation "Open workflows" [ref=e13]:
+    - tablist [ref=e14]:
+      - generic [ref=e15]:
+        - tab "node-test-and-docker" [selected] [ref=e16]:
+          - generic [ref=e18]: node-test-and-docker
+        - button "Close node-test-and-docker" [ref=e19]: ×
+    - button "New workflow tab" [ref=e20]: +
+  - generic "Mobile workspace panels" [ref=e245]:
+    - button "Resources" [active] [ref=e246]
+    - button "YAML & security" [ref=e247]
+  - tabpanel "node-test-and-docker" [ref=e21]:
+    - generic [ref=e104]:
+      - button "Undo move" [disabled] [ref=e105]
+      - application [ref=e106]:
+        - generic [ref=e108]:
+          - generic:
+            - generic:
+              - img
+        - img
+        - generic "Control Panel" [ref=e109]:
+          - button "Zoom In" [ref=e110] [cursor=pointer]:
+            - img [ref=e111]
+          - button "Zoom Out" [ref=e113] [cursor=pointer]:
+            - img [ref=e114]
+          - button "Fit View" [ref=e116] [cursor=pointer]:
+            - img [ref=e117]
+          - button "Toggle Interactivity" [ref=e119] [cursor=pointer]:
+            - img [ref=e120]
+        - link "React Flow attribution" [ref=e123] [cursor=pointer]:
+          - /url: https://reactflow.dev/attribution
+          - text: React Flow

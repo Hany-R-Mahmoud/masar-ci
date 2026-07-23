@@ -1,0 +1,164 @@
+- generic [ref=e2]:
+  - region "Notifications alt+T"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - link "Fihrist home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - generic [ref=e9]: Fihrist
+      - navigation "Landing page" [ref=e10]:
+        - link "The shelves" [ref=e11] [cursor=pointer]:
+          - /url: "#shelves"
+        - link "Link health" [ref=e12] [cursor=pointer]:
+          - /url: "#link-health"
+      - link "Open bookmarks library" [ref=e13] [cursor=pointer]:
+        - /url: /library
+        - text: Open bookmarks library
+        - img [ref=e14]
+    - main [ref=e17]:
+      - region "Keep the web you mean to return to." [ref=e18]:
+        - generic [ref=e19]:
+          - paragraph [ref=e20]: Your web, kept in good order
+          - heading "Keep the web you mean to return to." [level=1] [ref=e22]:
+            - generic [ref=e23]: Keep the web
+            - generic [ref=e24]: you mean to
+            - generic [ref=e25]: return to.
+          - paragraph [ref=e26]: Fihrist turns a pile of tabs and half-remembered links into a living library — easy to browse, quietly organized, and honest about what still works.
+          - generic [ref=e27]:
+            - link "Open bookmarks library" [ref=e28] [cursor=pointer]:
+              - /url: /library
+              - text: Open bookmarks library
+              - img [ref=e29]
+            - link "See how it works" [ref=e32] [cursor=pointer]:
+              - /url: "#shelves"
+              - text: See how it works
+              - img [ref=e33]
+          - paragraph [ref=e36]:
+            - img [ref=e37]
+            - text: Local-first by default. No Manus sign-in at the door.
+        - generic "A preview of a Fihrist bookmark library" [ref=e39]:
+          - article [ref=e47]:
+            - generic [ref=e48]:
+              - generic [ref=e49]: Your library
+              - generic [ref=e50]:
+                - img [ref=e51]
+                - text: in sync
+            - generic [ref=e54]:
+              - text: All bookmarks
+              - strong [ref=e55]: "84"
+            - generic [ref=e65]:
+              - img [ref=e67]
+              - generic [ref=e71]:
+                - generic [ref=e72]: Designing with data
+                - generic [ref=e73]: research / today
+              - generic [ref=e74]: healthy
+            - generic [ref=e75]:
+              - img [ref=e77]
+              - generic [ref=e84]:
+                - generic [ref=e85]: Field guide to focus
+                - generic [ref=e86]: read next / yesterday
+              - generic [ref=e87]: healthy
+            - generic [ref=e88]:
+              - img [ref=e90]
+              - generic [ref=e93]:
+                - generic [ref=e94]: Old project notes
+                - generic [ref=e95]: reference / 3 days ago
+              - generic [ref=e96]: redirected
+          - generic [ref=e97]:
+            - img [ref=e99]
+            - generic [ref=e101]:
+              - generic [ref=e102]: Read next
+              - generic [ref=e103]: 24 links
+          - generic [ref=e104]:
+            - img [ref=e106]
+            - generic [ref=e113]:
+              - generic [ref=e114]: Link check
+              - generic [ref=e115]: 14 healthy
+          - generic [ref=e116]:
+            - img [ref=e118]
+            - generic [ref=e124]:
+              - generic [ref=e125]: Sorted gently
+              - generic [ref=e126]: no busywork
+          - generic [ref=e127]: A small system for a long memory.
+      - region "Give every good link a place to land." [ref=e128]:
+        - generic [ref=e129]:
+          - paragraph [ref=e130]: A library, not a landfill
+          - heading "Give every good link a place to land." [level=2] [ref=e131]
+          - paragraph [ref=e132]: Save first. Sort when you have a minute. Find the thread again when it matters.
+        - generic [ref=e133]:
+          - article [ref=e134]:
+            - generic [ref=e135]: "01"
+            - generic [ref=e136]:
+              - heading "Capture without breaking your flow." [level=3] [ref=e137]
+              - paragraph [ref=e138]: Drop in a URL, add a note, and keep moving. Fihrist holds the context until you are ready to return.
+          - article [ref=e143]:
+            - generic [ref=e144]: "02"
+            - generic [ref=e145]:
+              - heading "Let collections do the shelving." [level=3] [ref=e146]
+              - paragraph [ref=e147]: Import your browser file and its folders become visible, useful collections.
+            - generic "Example bookmark collections" [ref=e148]:
+              - generic [ref=e149]:
+                - generic [ref=e151]: Read next
+                - generic [ref=e152]: 24 links
+              - generic [ref=e153]:
+                - generic [ref=e155]: Field notes
+                - generic [ref=e156]: 18 links
+              - generic [ref=e157]:
+                - generic [ref=e159]: Reference
+                - generic [ref=e160]: 42 links
+          - article [ref=e161]:
+            - generic [ref=e162]: "03"
+            - generic [ref=e163]:
+              - heading "Make link health part of the ritual." [level=3] [ref=e164]
+              - paragraph [ref=e165]: Check a whole shelf, see what moved, and clear confirmed dead ends together or one by one.
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - generic [ref=e168]: "84"
+                - generic [ref=e169]: saved
+              - generic [ref=e170]:
+                - generic [ref=e171]: "76"
+                - generic [ref=e172]: healthy
+              - generic [ref=e173]:
+                - generic [ref=e174]: "08"
+                - generic [ref=e175]: to review
+      - region "The web changes. Your memory does not have to." [ref=e176]:
+        - generic [ref=e177]:
+          - paragraph [ref=e178]: A little maintenance, done beautifully
+          - heading "The web changes. Your memory does not have to." [level=2] [ref=e179]
+          - paragraph [ref=e180]: Fihrist surfaces redirects and broken paths with enough context to act, without turning your library into an incident queue.
+          - link "Browse your library" [ref=e181] [cursor=pointer]:
+            - /url: /library
+            - text: Browse your library
+            - img [ref=e182]
+        - generic "Example link health report" [ref=e185]:
+          - generic [ref=e186]:
+            - generic [ref=e187]: Link health
+            - generic [ref=e188]: Last checked just now
+          - generic [ref=e198]:
+            - strong [ref=e199]: 90%
+            - generic [ref=e200]: of your saved web is still within reach
+          - generic [ref=e201]:
+            - img [ref=e202]
+            - generic [ref=e204]: Healthy links
+            - generic [ref=e205]: "76"
+          - generic [ref=e206]:
+            - img [ref=e207]
+            - generic [ref=e209]: Redirected links
+            - generic [ref=e210]: "05"
+          - generic [ref=e211]:
+            - img [ref=e212]
+            - generic [ref=e214]: Broken links to review
+            - generic [ref=e215]: "03"
+      - region "Make room for better remembering." [ref=e216]:
+        - generic [ref=e217]:
+          - paragraph [ref=e218]: Start with the links you already love
+          - heading "Make room for better remembering." [level=2] [ref=e219]
+        - link "Open bookmarks library" [ref=e220] [cursor=pointer]:
+          - /url: /library
+          - text: Open bookmarks library
+          - img [ref=e221]
+    - contentinfo [ref=e224]:
+      - generic [ref=e225]:
+        - img [ref=e226]
+        - text: Fihrist
+      - generic [ref=e228]: A quiet home for the web worth keeping.

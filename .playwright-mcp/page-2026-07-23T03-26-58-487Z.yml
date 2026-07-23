@@ -1,0 +1,95 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]: MasarCI · landing page study · true WebGL
+    - tablist "Landing page directions" [ref=e6]:
+      - tab "A · Workflow Observatory" [selected] [ref=e7] [cursor=pointer]
+      - tab "B · Pipeline in Motion" [ref=e8] [cursor=pointer]
+      - tab "C · Security Flight Deck" [ref=e9] [cursor=pointer]
+  - generic [ref=e11]:
+    - banner [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: masar·ci
+        - generic [ref=e15]: Visual GitHub Actions builder · security linter
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]: BUILD THE PATH
+          - heading "Make your CI legible." [level=1] [ref=e20]:
+            - text: Make your CI
+            - emphasis [ref=e21]: legible.
+          - paragraph [ref=e22]: MasarCI turns YAML into a workflow you can see, inspect, and improve before it reaches production.
+          - generic [ref=e23]:
+            - link "Open builder" [ref=e24] [cursor=pointer]:
+              - /url: ../web/
+              - text: Open builder
+              - generic [ref=e25]: ↗
+            - link "See the system ↓" [ref=e26] [cursor=pointer]:
+              - /url: "#system"
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - strong [ref=e29]: "01"
+              - text: / visual workflow
+            - generic [ref=e30]:
+              - strong [ref=e31]: "02"
+              - text: / security context
+            - generic [ref=e32]:
+              - strong [ref=e33]: "03"
+              - text: / readable YAML
+        - generic [ref=e34]:
+          - img "Animated 3D workflow graph" [ref=e35]:
+            - generic [ref=e36]: The whole path, in one frame.
+            - generic [ref=e37]: trigger → build → deploy
+          - img "MasarCI logo" [ref=e39]
+          - generic [ref=e40]:
+            - text: PATH STATUS
+            - text: trigger → build → deploy
+      - region "MasarCI capabilities" [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]: "01"
+          - text: Visual builder
+        - generic [ref=e44]:
+          - generic [ref=e45]: "02"
+          - text: Security linting
+        - generic [ref=e46]:
+          - generic [ref=e47]: "03"
+          - text: Downloadable YAML
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]: The workflow is the interface
+          - heading "Keep the system in view." [level=2] [ref=e51]
+        - generic [ref=e52]:
+          - paragraph [ref=e53]: "The landing page should feel like the product: quiet surfaces, visible paths, and enough signal to make a confident next move."
+          - generic [ref=e54]:
+            - article [ref=e55]:
+              - generic [ref=e56]: "01"
+              - heading "Shape the path" [level=3] [ref=e57]
+              - paragraph [ref=e58]: Arrange triggers, jobs, and dependencies on a canvas that keeps the system in view.
+            - article [ref=e59]:
+              - generic [ref=e60]: "02"
+              - heading "Catch the risk" [level=3] [ref=e61]
+              - paragraph [ref=e62]: See line-linked findings beside the workflow instead of hunting through a file.
+            - article [ref=e63]:
+              - generic [ref=e64]: "03"
+              - heading "Ship with intent" [level=3] [ref=e65]
+              - paragraph [ref=e66]: Export readable YAML after the model is secure and ready.
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - generic [ref=e69]: From concept to canvas
+          - heading "Design the path. Then open the builder." [level=2] [ref=e70]
+          - paragraph [ref=e71]: "A real workflow view anchors the promise: arrange the graph, inspect the YAML, and resolve security findings in the same working surface."
+        - figure "Existing builder surface · reference asset" [ref=e72]:
+          - img "MasarCI builder canvas reference" [ref=e73]
+          - generic [ref=e74]: Existing builder surface · reference asset
+      - generic [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]: Ready when the pipeline is
+          - heading "Make the next run easier to trust." [level=2] [ref=e78]
+        - generic [ref=e79]:
+          - paragraph [ref=e80]: Open a blank workflow or bring an existing YAML file into a visual, security-aware workspace.
+          - link "Open builder" [ref=e81] [cursor=pointer]:
+            - /url: ../web/
+            - text: Open builder
+            - generic [ref=e82]: ↗
+    - contentinfo [ref=e83]:
+      - generic [ref=e84]: masar·ci
+      - generic [ref=e85]: Landing study · A · Workflow Observatory

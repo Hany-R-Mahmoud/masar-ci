@@ -1,0 +1,3 @@
+[     775ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://localhost:3000/%VITE_ANALYTICS_ENDPOINT%/umami:0
+[     775ms] [ERROR] Refused to execute script from 'http://localhost:3000/%VITE_ANALYTICS_ENDPOINT%/umami' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/:0
+[    7417ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/__manus__/debug-collector.js:396

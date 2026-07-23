@@ -1,0 +1,154 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]: masar·ci
+      - textbox "workflow file name" [ref=e5]: untitled
+      - generic [ref=e6]: Warnings Found · 1
+      - button "Copy" [ref=e8] [cursor=pointer]
+      - button "Import" [ref=e9] [cursor=pointer]
+      - button "Download .yml" [ref=e10] [cursor=pointer]
+      - button "New" [ref=e11] [cursor=pointer]
+    - navigation "Open workflows" [ref=e12]:
+      - tablist [ref=e13]:
+        - generic [ref=e14]:
+          - tab "node-test-and-docker" [ref=e15]:
+            - generic [ref=e17]: node-test-and-docker
+          - button "Close node-test-and-docker" [ref=e18]: ×
+        - generic [ref=e311]:
+          - tab "Unsaved changes untitled" [selected] [ref=e350]:
+            - generic [ref=e313]:
+              - generic "Unsaved changes" [ref=e351]: ●
+              - generic [ref=e314]: untitled
+          - button "Close untitled" [ref=e315]: ×
+      - button "New workflow tab" [ref=e19]: +
+    - tabpanel "Unsaved changes untitled" [ref=e352]:
+      - complementary [ref=e22]:
+        - generic [ref=e23]:
+          - heading "Triggers" [level=4] [ref=e24]
+          - generic [ref=e25]:
+            - button "Add push to canvas" [active] [ref=e26]:
+              - generic [ref=e28]: push
+              - generic [ref=e29]: "on:"
+            - button "Add pull_request to canvas" [ref=e30]:
+              - generic [ref=e32]: pull_request
+              - generic [ref=e33]: "on:"
+            - button "Add workflow_dispatch to canvas" [ref=e34]:
+              - generic [ref=e36]: workflow_dispatch
+              - generic [ref=e37]: "on:"
+            - button "Add schedule to canvas" [ref=e38]:
+              - generic [ref=e40]: schedule
+              - generic [ref=e41]: "on:"
+        - generic [ref=e42]:
+          - heading "Jobs" [level=4] [ref=e43]
+          - generic [ref=e44]:
+            - button "Add build to canvas" [ref=e45]:
+              - generic [ref=e47]: build
+            - button "Add test to canvas" [ref=e48]:
+              - generic [ref=e50]: test
+            - button "Add deploy to canvas" [ref=e51]:
+              - generic [ref=e53]: deploy
+            - button "Add lint to canvas" [ref=e54]:
+              - generic [ref=e56]: lint
+        - generic [ref=e57]:
+          - heading "Action Marketplace" [level=4] [ref=e58]
+          - generic [ref=e59]:
+            - button "Add actions/checkout to canvas" [ref=e60]:
+              - generic [ref=e62]: actions/checkout
+              - generic [ref=e63]: "@v7"
+            - button "Add actions/setup-node to canvas" [ref=e64]:
+              - generic [ref=e66]: actions/setup-node
+              - generic [ref=e67]: "@v7"
+            - button "Add actions/setup-python to canvas" [ref=e68]:
+              - generic [ref=e70]: actions/setup-python
+              - generic [ref=e71]: "@v7"
+            - button "Add actions/cache to canvas" [ref=e72]:
+              - generic [ref=e74]: actions/cache
+              - generic [ref=e75]: "@v6"
+            - button "Add actions/upload-artifact to canvas" [ref=e76]:
+              - generic [ref=e78]: actions/upload-artifact
+              - generic [ref=e79]: "@v7"
+            - button "Add docker/build-push-action to canvas" [ref=e80]:
+              - generic [ref=e82]: docker/build-push-action
+              - generic [ref=e83]: "@v7"
+        - generic [ref=e84]:
+          - heading "Regional Templates" [level=4] [ref=e85]
+          - generic [ref=e86]:
+            - button "AWS ECR · Bahrain" [ref=e87] [cursor=pointer]:
+              - generic [ref=e89]: AWS ECR · Bahrain
+            - button "Oracle Cloud · Jeddah" [ref=e90] [cursor=pointer]:
+              - generic [ref=e92]: Oracle Cloud · Jeddah
+            - button "Salla deploy" [ref=e93] [cursor=pointer]:
+              - generic [ref=e95]: Salla deploy
+        - generic [ref=e96]:
+          - heading "Recent workflows" [level=4] [ref=e97]
+          - generic [ref=e98]:
+            - button "untitled Unsaved changes" [ref=e353]:
+              - generic [ref=e319]: untitled
+              - generic "Unsaved changes" [ref=e354]: ●
+            - button "node-test-and-docker" [ref=e99]:
+              - generic [ref=e101]: node-test-and-docker
+      - generic [ref=e320]:
+        - button "Undo move" [disabled] [ref=e321]
+        - application [ref=e322]:
+          - group [ref=e355]:
+            - 'group "Trigger: on push, branches main" [ref=e356]':
+              - generic [ref=e357]: Trigger
+              - generic [ref=e358]: "on: push"
+              - generic [ref=e359]: "branches: [main]"
+          - img
+          - generic "Control Panel" [ref=e325]:
+            - button "Zoom In" [disabled]:
+              - img
+            - button "Zoom Out" [ref=e329] [cursor=pointer]:
+              - img [ref=e330]
+            - button "Fit View" [ref=e332] [cursor=pointer]:
+              - img [ref=e333]
+            - button "Toggle Interactivity" [ref=e335] [cursor=pointer]:
+              - img [ref=e336]
+          - link "React Flow attribution" [ref=e339] [cursor=pointer]:
+            - /url: https://reactflow.dev/attribution
+            - text: React Flow
+      - generic [ref=e182]:
+        - generic [ref=e183]:
+          - generic [ref=e184]:
+            - generic [ref=e185]: deploy.yml
+            - button "copy" [ref=e186] [cursor=pointer]
+          - generic [ref=e187]:
+            - generic [ref=e188]:
+              - generic [ref=e189]: "1"
+              - generic [ref=e190]: "name: untitled"
+            - generic [ref=e191]:
+              - generic [ref=e192]: "2"
+              - generic [ref=e193]: "'on':"
+            - generic [ref=e194]:
+              - generic [ref=e195]: "3"
+              - generic [ref=e196]: "push:"
+            - generic [ref=e197]:
+              - generic [ref=e198]: "4"
+              - generic [ref=e199]: "branches:"
+            - generic [ref=e361]:
+              - generic [ref=e362]: "5"
+              - generic [ref=e363]: "- main"
+            - generic [ref=e364]:
+              - generic [ref=e365]: "6"
+              - generic [ref=e366]: "jobs: {}"
+            - generic [ref=e368]: "7"
+        - generic [ref=e280]:
+          - generic [ref=e281]:
+            - generic [ref=e282]: Security
+            - generic [ref=e283]: 1 findings
+          - generic [ref=e284]:
+            - button "all 1" [pressed] [ref=e285]
+            - button "critical 0" [ref=e341]
+            - button "warning 1" [ref=e342]
+            - button "info 0" [ref=e288]
+          - generic [ref=e343]:
+            - generic [ref=e344]:
+              - generic [ref=e345]: warning
+              - generic [ref=e346]: PERMS-003
+              - generic [ref=e347]: L1
+            - generic [ref=e348]: No top-level permissions defined
+            - generic [ref=e349]: "The workflow has no explicit `permissions:` block, so it gets the broad default token. Define `permissions:` at the top level to enforce least privilege."
+  - button "Open Next.js Dev Tools" [ref=e307] [cursor=pointer]:
+    - img [ref=e308]
+  - alert [ref=e301]

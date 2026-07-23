@@ -1,0 +1,44 @@
+[     403ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:29904
+[     598ms] [WARNING] Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation @ https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js:0
+[     602ms] [WARNING] You are using the in-browser Babel transformer. Be sure to precompile your scripts for production - https://babeljs.io/docs/setup/ @ https://unpkg.com/@babel/standalone@7.29.0/babel.min.js:2
+[     727ms] TypeError: geometry.computeLineDistances is not a function
+    at connector (<anonymous>:176:28)
+    at <anonymous>:180:5
+    at commitHookEffectListMount (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:23199:28)
+    at commitPassiveMountOnFiber (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24980:13)
+    at commitPassiveMountEffects_complete (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24940:11)
+    at commitPassiveMountEffects_begin (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24927:9)
+    at commitPassiveMountEffects (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24915:5)
+    at flushPassiveEffectsImpl (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:27088:5)
+    at flushPassiveEffects (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:27033:16)
+    at https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:26818:11
+    at workLoop (https://unpkg.com/react@18.3.1/umd/react.development.js:2653:36)
+    at flushWork (https://unpkg.com/react@18.3.1/umd/react.development.js:2626:16)
+    at MessagePort.performWorkUntilDeadline (https://unpkg.com/react@18.3.1/umd/react.development.js:2920:23)
+[     715ms] [ERROR] The above error occurred in the <WorkflowCanvas> component:
+
+    at WorkflowCanvas (<anonymous>:61:22)
+    at div
+    at section
+    at main
+    at div
+    at div
+    at div
+    at App (<anonymous>:258:19)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:18713
+[     730ms] TypeError: geometry.computeLineDistances is not a function
+    at connector (<anonymous>:176:28)
+    at <anonymous>:180:5
+    at commitHookEffectListMount (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:23199:28)
+    at commitPassiveMountOnFiber (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24980:13)
+    at commitPassiveMountEffects_complete (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24940:11)
+    at commitPassiveMountEffects_begin (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24927:9)
+    at commitPassiveMountEffects (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:24915:5)
+    at flushPassiveEffectsImpl (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:27088:5)
+    at flushPassiveEffects (https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:27033:16)
+    at https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js:26818:11
+    at workLoop (https://unpkg.com/react@18.3.1/umd/react.development.js:2653:36)
+    at flushWork (https://unpkg.com/react@18.3.1/umd/react.development.js:2626:16)
+    at MessagePort.performWorkUntilDeadline (https://unpkg.com/react@18.3.1/umd/react.development.js:2920:23)

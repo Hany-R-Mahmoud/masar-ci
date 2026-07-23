@@ -1,0 +1,95 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - link "masar·ci" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e6]: Visual GitHub Actions builder · security linter
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - paragraph [ref=e9]: Build the path
+          - heading "Make your CI legible." [level=1] [ref=e10]
+          - paragraph [ref=e11]: MasarCI is a visual GitHub Actions workflow builder with security linting, so you can see, inspect, and improve CI before it reaches production.
+          - generic [ref=e12]:
+            - link "Open builder" [ref=e13] [cursor=pointer]:
+              - /url: /workstation
+              - text: Open builder
+              - generic [ref=e14]: ↗
+            - link "See the system ↓" [ref=e15] [cursor=pointer]:
+              - /url: "#system"
+          - generic [ref=e16]:
+            - generic [ref=e17]: 01 / visual workflow
+            - generic [ref=e18]: 02 / security context
+            - generic [ref=e19]: 03 / readable YAML
+        - generic [ref=e20]:
+          - img "Animated 3D workflow graph showing the MasarCI sample pipeline" [ref=e21]:
+            - generic [ref=e23]: ● trigger → build → deploy
+            - generic [ref=e24]:
+              - generic [ref=e25]: "on: push"
+              - generic [ref=e26]: "branches: [main]"
+            - generic [ref=e27]:
+              - generic [ref=e28]: build
+              - generic [ref=e29]: ubuntu-latest · 3 steps
+            - generic [ref=e30]:
+              - generic [ref=e31]: deploy
+              - generic [ref=e32]:
+                - text: "needs: [build] ·"
+                - emphasis [ref=e33]: finding
+            - generic [ref=e34]: the whole path, in one frame.
+          - img "MasarCI logo" [ref=e35]
+          - generic [ref=e36]:
+            - text: PATH STATUS
+            - text: trigger → build → deploy
+      - region "MasarCI capabilities" [ref=e37]:
+        - generic [ref=e38]:
+          - generic [ref=e39]: "01"
+          - text: Visual builder
+        - generic [ref=e40]:
+          - generic [ref=e41]: "02"
+          - text: Security linting
+        - generic [ref=e42]:
+          - generic [ref=e43]: "03"
+          - text: Downloadable YAML
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - paragraph [ref=e46]: The workflow is the interface
+          - heading "Keep the system in view." [level=2] [ref=e47]
+        - generic [ref=e48]:
+          - paragraph [ref=e49]: "The landing page should feel like the product: quiet surfaces, visible paths, and enough signal to make a confident next move."
+          - generic [ref=e50]:
+            - article [ref=e51]:
+              - text: "01"
+              - heading "Visual builder" [level=3] [ref=e52]
+              - paragraph [ref=e53]: Arrange triggers, jobs, and steps as a readable path.
+            - article [ref=e54]:
+              - text: "02"
+              - heading "Security linting" [level=3] [ref=e55]
+              - paragraph [ref=e56]: See risky patterns in context and apply safe fixes.
+            - article [ref=e57]:
+              - text: "03"
+              - heading "Downloadable YAML" [level=3] [ref=e58]
+              - paragraph [ref=e59]: Leave with valid GitHub Actions YAML you can trust.
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - paragraph [ref=e62]: From concept to canvas
+          - heading "Design the path. Then open the builder." [level=2] [ref=e63]
+          - paragraph [ref=e64]: "A real workflow view anchors the promise: arrange the graph, inspect the YAML, and resolve security findings in the same working surface."
+        - figure "Existing builder surface · reference asset" [ref=e65]:
+          - img "MasarCI builder canvas reference" [ref=e66]
+          - generic [ref=e67]: Existing builder surface · reference asset
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - paragraph [ref=e70]: Ready when the pipeline is
+          - heading "Make the next run easier to trust." [level=2] [ref=e71]
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Open a blank workflow or bring an existing YAML file into a visual, security-aware workspace.
+          - link "Open builder" [ref=e74] [cursor=pointer]:
+            - /url: /workstation
+            - text: Open builder
+            - generic [ref=e75]: ↗
+      - generic [ref=e76]:
+        - generic [ref=e77]: masar·ci
+        - generic [ref=e78]: Landing page · Workflow Observatory
+  - button "Open Next.js Dev Tools" [ref=e84] [cursor=pointer]:
+    - img [ref=e85]
+  - alert [ref=e88]
