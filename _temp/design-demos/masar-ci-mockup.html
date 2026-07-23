@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>MasarCI · Hi-Fi Mockup · Design Checkpoint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:oklch(0.18 0.012 250); --surface:oklch(0.22 0.014 250); --surface-2:oklch(0.255 0.014 250);
+  --border:oklch(0.32 0.016 250); --border-strong:oklch(0.40 0.018 250);
+  --ink:oklch(0.96 0.004 250); --ink-muted:oklch(0.66 0.016 250); --ink-faint:oklch(0.48 0.014 250);
+  --accent:oklch(0.70 0.15 52); --accent-soft:oklch(0.70 0.15 52 / 0.16);
+  --critical:oklch(0.62 0.22 25); --critical-soft:oklch(0.62 0.22 25 / 0.14);
+  --warning:oklch(0.78 0.15 75); --secure:oklch(0.72 0.15 150); --secure-soft:oklch(0.72 0.15 150 / 0.14);
+  --code-bg:oklch(0.15 0.010 250); --code-ink:oklch(0.90 0.004 250);
+  --code-key:oklch(0.74 0.10 250); --code-str:oklch(0.80 0.12 145); --code-comment:oklch(0.50 0.014 250);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:oklch(0.10 0.008 250);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.page{max-width:1440px;margin:0 auto;padding:28px 28px 56px}
+.eyebrow{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+.h1{font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
+.h1 .dot{color:var(--accent)}
+.lede{color:var(--ink-muted);font-size:14px;max-width:780px;margin-bottom:28px;text-wrap:pretty}
+.app{display:grid;grid-template-rows:48px 1fr;height:840px;border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;background:var(--bg);box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.chrome{display:flex;align-items:center;gap:14px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.wordmark{font-family:"IBM Plex Mono";font-weight:500;font-size:16px;letter-spacing:-.01em}
+.wordmark .dot{color:var(--accent)}
+.wf-name{background:transparent;border:1px solid var(--border);color:var(--ink);font-family:"IBM Plex Mono";font-size:12.5px;padding:5px 10px;border-radius:6px;width:248px}
+.wf-name:focus{outline:1px solid var(--accent)}
+.spacer{flex:1}
+.state-pill{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono";font-size:11px;font-weight:600;letter-spacing:.04em;padding:5px 11px;border-radius:999px;background:var(--critical-soft);color:var(--critical);border:1px solid oklch(0.62 0.22 25 / 0.35)}
+.state-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--critical)}
+.btn{font-family:"IBM Plex Sans";font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);color:oklch(0.16 0.02 52);border-color:transparent}
+.body{display:grid;grid-template-columns:232px 1fr 430px;min-height:0}
+.tray{background:var(--surface);border-right:1px solid var(--border);padding:14px 12px;overflow:auto}
+.tray h4{font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 8px}
+.tray h4:first-child{margin-top:0}
+.titem{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;font-size:12.5px;color:var(--ink);cursor:grab;border:1px solid transparent}
+.titem:hover{background:var(--surface-2);border-color:var(--border)}
+.titem .g{width:14px;height:14px;flex:0 0 14px;opacity:.9}
+.titem .tag{margin-left:auto;font-family:"IBM Plex Mono";font-size:10.5px;color:var(--ink-faint)}
+.hexmini{clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:var(--ink)}
+.rectmini{width:13px;height:9px;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:2px}
+.stepmini{width:13px;height:7px;background:var(--surface);border:1px solid var(--border);border-radius:2px}
+.tplmini{width:13px;height:9px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:2px}
+.canvas{position:relative;background:
+  linear-gradient(var(--border) 1px,transparent 1px),
+  linear-gradient(90deg,var(--border) 1px,transparent 1px),
+  var(--bg);
+  background-size:24px 24px,24px 24px,100% 100%;background-position:-1px -1px;overflow:hidden}
+.clabel{position:absolute;top:12px;left:16px;font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.zoom{position:absolute;top:12px;right:16px;font-family:"IBM Plex Mono";font-size:11px;color:var(--ink-muted);display:flex;gap:8px}
+.zoom b{color:var(--ink)}
+.minimap{position:absolute;right:16px;bottom:16px;width:128px;height:78px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);opacity:.85}
+.graph{position:absolute;inset:0;padding:64px 40px 40px}
+.node-trig{position:absolute;left:48px;top:64px;width:188px;height:74px;clip-path:polygon(22% 0,78% 0,100% 50%,78% 100%,22% 100%,0 50%);background:var(--surface-2);border:2px solid var(--accent);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px}
+.node-trig .t{font-family:"IBM Plex Mono";font-size:12px;font-weight:600;color:var(--ink)}
+.node-trig .s{font-family:"IBM Plex Mono";font-size:10.5px;color:var(--accent)}
+.node-trig .kind{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-family:"IBM Plex Mono";font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);background:var(--bg);padding:0 6px}
+.node-job{position:absolute;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface-2);padding:12px}
+.node-job .jhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.node-job .jicon{width:14px;height:10px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:2px}
+.node-job .jname{font-family:"IBM Plex Mono";font-size:12.5px;font-weight:600}
+.node-job .runner{margin-left:auto;font-family:"IBM Plex Mono";font-size:10px;color:var(--ink-faint)}
+.node-job .needs-tag{font-family:"IBM Plex Mono";font-size:10px;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:1px 5px;background:var(--accent-soft)}
+.step{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--border);border-radius:6px;background:var(--surface);margin-bottom:7px;position:relative}
+.step:last-child{margin-bottom:0}
+.step .glyph{width:18px;height:18px;border-radius:4px;background:var(--code-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono";font-size:9.5px;color:var(--ink-muted);flex:0 0 18px}
+.step .stxt{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--ink)}
+.step .stxt b{color:var(--code-key)}
+.step .stxt .v{color:var(--accent)}
+.step .stxt .c{color:var(--code-comment)}
+.step.flagged{border-color:var(--critical);box-shadow:0 0 0 2px var(--critical-soft)}
+.badge{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:var(--critical);color:#fff;font-family:"IBM Plex Mono";font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+.badge.w{background:var(--warning);color:#1a1a1a}
+#job-build{left:300px;top:64px;width:340px}
+#job-deploy{left:300px;top:340px;width:340px}
+.edge{position:absolute;left:470px;top:230px;width:2px;height:110px;background:repeating-linear-gradient(var(--accent) 0 6px,transparent 6px 12px)}
+.edge::after{content:"";position:absolute;left:-5px;bottom:-1px;width:0;height:0;border:6px solid transparent;border-top-color:var(--accent)}
+.edge-lbl{position:absolute;left:452px;top:268px;font-family:"IBM Plex Mono";font-size:9.5px;color:var(--accent);background:var(--bg);padding:1px 5px;border:1px solid var(--accent);border-radius:4px}
+.edge2{position:absolute;left:136px;top:135px;width:164px;height:2px;background:var(--border-strong)}
+.edge2::before{content:"";position:absolute;right:-1px;top:-4px;width:0;height:0;border:5px solid transparent;border-left-color:var(--border-strong)}
+.panel{display:grid;grid-template-rows:1fr 248px;border-left:1px solid var(--border);background:var(--surface);min-width:0}
+.code-pane{background:var(--code-bg);border-bottom:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.phead{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
+.phead .pt{font-family:"IBM Plex Mono";font-size:11px;font-weight:600;letter-spacing:.05em}
+.phead .copy{margin-left:auto;font-family:"IBM Plex Mono";font-size:10.5px;color:var(--ink-muted);cursor:pointer}
+.phead .copy:hover{color:var(--accent)}
+.code{flex:1;overflow:auto;padding:12px 0;font-family:"IBM Plex Mono";font-size:12px;line-height:1.65}
+.code .row{display:flex;padding:0 14px 0 0}
+.code .ln{width:34px;flex:0 0 34px;text-align:right;padding-right:12px;color:var(--ink-faint);user-select:none}
+.code .row.hi{background:var(--critical-soft)}
+.code .row.hi .ln{color:var(--critical)}
+.code .k{color:var(--code-key)} .code .s{color:var(--code-str)} .code .c{color:var(--code-comment)} .code .x{color:var(--ink)}
+.code .row.hi .x{color:var(--critical)}
+.lint-pane{display:flex;flex-direction:column;min-height:0}
+.lint-list{flex:1;overflow:auto;padding:8px}
+.find{border:1px solid var(--border);border-radius:8px;background:var(--surface-2);padding:10px 11px;margin-bottom:8px}
+.find.crit{border-color:oklch(0.62 0.22 25 / 0.45);background:var(--critical-soft)}
+.find.warn{border-color:oklch(0.78 0.15 75 / 0.4)}
+.find .fhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.find .sev{font-family:"IBM Plex Mono";font-size:9.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:4px;text-transform:uppercase}
+.find .sev.crit{background:var(--critical);color:#fff}
+.find .sev.warn{background:var(--warning);color:#1a1a1a}
+.find .rid{font-family:"IBM Plex Mono";font-size:10.5px;color:var(--ink-faint)}
+.find .loc{margin-left:auto;font-family:"IBM Plex Mono";font-size:10px;color:var(--ink-muted)}
+.find .ftitle{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.find .fdesc{font-size:11.5px;color:var(--ink-muted);line-height:1.5;text-wrap:pretty}
+.find .fdesc code{font-family:"IBM Plex Mono";font-size:10.5px;background:var(--code-bg);padding:1px 4px;border-radius:3px;color:var(--code-str)}
+.find .fix{margin-top:9px;display:flex;align-items:center;gap:8px}
+.find .fixbtn{font-family:"IBM Plex Sans";font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);cursor:pointer}
+.find .fixbtn:hover{background:var(--accent);color:oklch(0.16 0.02 52)}
+.find .fixnote{font-family:"IBM Plex Mono";font-size:10px;color:var(--ink-faint)}
+.section{margin-top:40px}
+.section h2{font-size:16px;font-weight:700;margin-bottom:4px}
+.section .sub{color:var(--ink-muted);font-size:13px;margin-bottom:18px}
+.strip{display:grid;gap:16px}
+.states{grid-template-columns:repeat(4,1fr)}
+.themes{grid-template-columns:repeat(3,1fr)}
+.mini{border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--bg);height:230px;position:relative}
+.mini .mlabel{position:absolute;top:8px;left:10px;font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);z-index:3}
+.mini .mpill{position:absolute;top:8px;right:10px;font-family:"IBM Plex Mono";font-size:9px;padding:2px 7px;border-radius:999px;z-index:3}
+.mini .mpill.empty{background:var(--surface-2);color:var(--ink-muted);border:1px solid var(--border)}
+.mini .mpill.build{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.mini .mpill.warn{background:var(--critical-soft);color:var(--critical);border:1px solid oklch(0.62 0.22 25 / .35)}
+.mini .mpill.secure{background:var(--secure-soft);color:var(--secure);border:1px solid oklch(0.72 0.15 150 / .35)}
+.mini-grid{position:absolute;inset:0;
+  background:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px),var(--bg);
+  background-size:18px 18px,18px 18px,100% 100%;opacity:.5}
+.mini-content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;padding:30px 16px 16px}
+.mhex{width:54px;height:30px;clip-path:polygon(22% 0,78% 0,100% 50%,78% 100%,22% 100%,0 50%);background:var(--surface-2);border:2px solid var(--accent)}
+.mjob{width:96px;height:62px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px;padding:7px}
+.mjob .ms{height:8px;border:1px solid var(--border);border-radius:2px;background:var(--surface)}
+.mjob .ms.crit{border-color:var(--critical);box-shadow:0 0 0 2px var(--critical-soft)}
+.medge{width:2px;height:22px;background:repeating-linear-gradient(var(--accent) 0 4px,transparent 4px 8px)}
+.tname{position:absolute;bottom:8px;left:10px;font-family:"IBM Plex Mono";font-size:9.5px;color:var(--ink-faint)}
+.tB{--bg:oklch(0.985 0.004 90);--surface:oklch(0.99 0.003 90);--surface-2:oklch(0.955 0.006 90);--border:oklch(0.86 0.01 90);--border-strong:oklch(0.7 0.012 90);--ink:oklch(0.22 0.012 250);--ink-muted:oklch(0.48 0.014 250);--ink-faint:oklch(0.62 0.014 250);--accent:oklch(0.55 0.17 45)}
+.tB .mini-grid{background:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px),var(--bg);background-size:18px 18px,18px 18px,100% 100%;opacity:.7}
+.tC{--accent:oklch(0.74 0.19 52)}
+.tC .mjob{box-shadow:0 0 0 1px var(--accent-soft)}
+.note{margin-top:24px;padding:14px 16px;border:1px dashed var(--border-strong);border-radius:8px;color:var(--ink-muted);font-size:12.5px;line-height:1.6;text-wrap:pretty}
+.note b{color:var(--ink)}
+.note .accent{color:var(--accent)}
+.foot{margin-top:30px;font-family:"IBM Plex Mono";font-size:10.5px;color:var(--ink-faint);display:flex;gap:18px}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow">Hi-Fi Mockup · Design Checkpoint · awaiting approval</div>
+  <div class="h1">Masar<span class="dot">·</span>CI</div>
+  <div class="lede">Visual GitHub Actions workflow builder + security linter. Hero frame shows the <b>Warnings Found</b> state (Theme A · dark console): a Node test + Docker push pipeline with one Critical script-injection finding auto-fixable to an <code>env:</code> intermediary. Below: the four spec states and three theme directions.</div>
+
+  <div class="app">
+    <div class="chrome">
+      <span class="wordmark">masar<span class="dot">·</span>ci</span>
+      <input class="wf-name" value="node-test-and-docker.yml" aria-label="workflow file name">
+      <span class="spacer"></span>
+      <span class="state-pill"><span class="dot"></span>Warnings Found · 2</span>
+      <button class="btn">Copy YAML</button>
+      <button class="btn primary">Download .yml</button>
+      <button class="btn">New</button>
+    </div>
+    <div class="body">
+      <aside class="tray">
+        <h4>Triggers</h4>
+        <div class="titem"><span class="g hexmini"></span>push<span class="tag">on:</span></div>
+        <div class="titem"><span class="g hexmini"></span>pull_request<span class="tag">on:</span></div>
+        <div class="titem"><span class="g hexmini"></span>workflow_dispatch<span class="tag">on:</span></div>
+        <h4>Jobs</h4>
+        <div class="titem"><span class="g rectmini"></span>build</div>
+        <div class="titem"><span class="g rectmini"></span>test</div>
+        <div class="titem"><span class="g rectmini"></span>deploy</div>
+        <h4>Action Marketplace</h4>
+        <div class="titem"><span class="g stepmini"></span>actions/checkout<span class="tag">@v7</span></div>
+        <div class="titem"><span class="g stepmini"></span>actions/setup-node<span class="tag">@v7</span></div>
+        <div class="titem"><span class="g stepmini"></span>actions/setup-python<span class="tag">@v7</span></div>
+        <div class="titem"><span class="g stepmini"></span>actions/cache<span class="tag">@v6</span></div>
+        <div class="titem"><span class="g stepmini"></span>actions/upload-artifact<span class="tag">@v7</span></div>
+        <div class="titem"><span class="g stepmini"></span>docker/build-push-action<span class="tag">@v7</span></div>
+        <h4>Regional Templates</h4>
+        <div class="titem"><span class="g tplmini"></span>AWS ECR · Bahrain</div>
+        <div class="titem"><span class="g tplmini"></span>Oracle Cloud · Jeddah</div>
+        <div class="titem"><span class="g tplmini"></span>Salla deploy</div>
+      </aside>
+      <div class="canvas">
+        <span class="clabel">Canvas</span>
+        <div class="zoom"><b>100%</b><span>−</span><span>+</span><span>⌖</span></div>
+        <div class="minimap"></div>
+        <div class="graph">
+          <div class="node-trig">
+            <span class="kind">Trigger</span>
+            <span class="t">on: push</span>
+            <span class="s">branches: [main]</span>
+          </div>
+          <div class="edge2"></div>
+          <div class="node-job" id="job-build">
+            <div class="jhead"><span class="jicon"></span><span class="jname">build</span><span class="runner">ubuntu-latest</span></div>
+            <div class="step"><span class="glyph">✓</span><span class="stxt"><b>uses:</b> actions/checkout<span class="v">@v7</span></span></div>
+            <div class="step"><span class="glyph">✓</span><span class="stxt"><b>uses:</b> actions/setup-node<span class="v">@v7</span> <span class="c"># node 20</span></span></div>
+            <div class="step"><span class="glyph">$_</span><span class="stxt"><b>run:</b> npm ci &amp;&amp; npm test</span></div>
+          </div>
+          <div class="edge"></div>
+          <span class="edge-lbl">needs:</span>
+          <div class="node-job" id="job-deploy">
+            <div class="jhead"><span class="jicon"></span><span class="jname">deploy</span><span class="needs-tag">needs: [build]</span><span class="runner">ubuntu-latest</span></div>
+            <div class="step"><span class="glyph">✓</span><span class="stxt"><b>uses:</b> docker/login-action<span class="v">@v4</span></span></div>
+            <div class="step flagged"><span class="badge">!</span><span class="glyph">$_</span><span class="stxt"><b>run:</b> echo "${{ github.event.issue.title }}"</span></div>
+            <div class="step"><span class="glyph">✓</span><span class="stxt"><b>uses:</b> docker/build-push-action<span class="v">@v7</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="code-pane">
+          <div class="phead"><span class="pt">deploy.yml</span><span class="copy">⧉ copy</span></div>
+          <div class="code">
+            <div class="row"><span class="ln">1</span><span class="x"><span class="k">name:</span> node-test-and-docker</span></div>
+            <div class="row"><span class="ln">2</span><span class="x"><span class="k">on:</span></span></div>
+            <div class="row"><span class="ln">3</span><span class="x">  <span class="k">push:</span></span></div>
+            <div class="row"><span class="ln">4</span><span class="x">    <span class="k">branches:</span> <span class="s">[main]</span></span></div>
+            <div class="row"><span class="ln">5</span><span class="x"><span class="k">permissions:</span></span></div>
+            <div class="row"><span class="ln">6</span><span class="x">  <span class="k">contents:</span> <span class="s">read</span>   <span class="c"># least privilege</span></span></div>
+            <div class="row"><span class="ln">7</span><span class="x"><span class="k">jobs:</span></span></div>
+            <div class="row"><span class="ln">8</span><span class="x">  <span class="k">build:</span></span></div>
+            <div class="row"><span class="ln">9</span><span class="x">    <span class="k">runs-on:</span> <span class="s">ubuntu-latest</span></span></div>
+            <div class="row"><span class="ln">10</span><span class="x">    <span class="k">steps:</span></span></div>
+            <div class="row"><span class="ln">11</span><span class="x">      - <span class="k">uses:</span> actions/checkout@v7</span></div>
+            <div class="row"><span class="ln">12</span><span class="x">      - <span class="k">uses:</span> actions/setup-node@v7</span></div>
+            <div class="row"><span class="ln">13</span><span class="x">      - <span class="k">run:</span> <span class="s">npm ci &amp;&amp; npm test</span></span></div>
+            <div class="row"><span class="ln">14</span><span class="x">  <span class="k">deploy:</span></span></div>
+            <div class="row"><span class="ln">15</span><span class="x">    <span class="k">needs:</span> <span class="s">[build]</span></span></div>
+            <div class="row"><span class="ln">16</span><span class="x">    <span class="k">runs-on:</span> <span class="s">ubuntu-latest</span></span></div>
+            <div class="row"><span class="ln">17</span><span class="x">    <span class="k">steps:</span></span></div>
+            <div class="row"><span class="ln">18</span><span class="x">      - <span class="k">uses:</span> docker/login-action@v4</span></div>
+            <div class="row hi"><span class="ln">19</span><span class="x">      - <span class="k">run:</span> <span class="s">echo "${{ github.event.issue.title }}"</span></span></div>
+            <div class="row"><span class="ln">20</span><span class="x">      - <span class="k">uses:</span> docker/build-push-action@v7</span></div>
+          </div>
+        </div>
+        <div class="lint-pane">
+          <div class="phead"><span class="pt">Security &amp; Best Practices</span><span class="copy" style="margin-left:auto">2 findings</span></div>
+          <div class="lint-list">
+            <div class="find crit">
+              <div class="fhead"><span class="sev crit">Critical</span><span class="rid">INJECT-001</span><span class="loc">deploy › step 2</span></div>
+              <div class="ftitle">Script injection via untrusted input</div>
+              <div class="fdesc">A <code>run:</code> block interpolates <code>${{ github.event.issue.title }}</code> directly. Issue titles are attacker-controlled — a crafted string executes arbitrary shell with the runner token. Hoist into a step-level <code>env:</code> variable.</div>
+              <div class="fix"><button class="fixbtn">Auto-Fix → env: intermediary</button><span class="fixnote">applies INJECT-001</span></div>
+            </div>
+            <div class="find warn">
+              <div class="fhead"><span class="sev warn">Warning</span><span class="rid">PERMS-002</span><span class="loc">workflow › top-level</span></div>
+              <div class="ftitle">Permissions scope broader than needed</div>
+              <div class="fdesc">Detected <code>packages: write</code> on a workflow that only pushes a Docker image. Consider narrowing to the minimal scopes.</div>
+              <div class="fix"><button class="fixbtn">Auto-Fix → least privilege</button><span class="fixnote">applies PERMS-002</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <h2>States (spec §7)</h2>
+    <div class="sub">The workflow traverses Empty → Building → Warnings Found → Secure &amp; Ready. Same canvas, evolving state.</div>
+    <div class="strip states">
+      <div class="mini"><span class="mlabel">Empty Workflow</span><span class="mpill empty">empty</span><div class="mini-grid"></div><div class="mini-content"><div style="font-family:'IBM Plex Mono';font-size:11px;color:var(--ink-faint)">drop a trigger to begin →</div></div></div>
+      <div class="mini"><span class="mlabel">Building</span><span class="mpill build">building</span><div class="mini-grid"></div><div class="mini-content"><div class="mhex"></div><div class="mjob"><div class="ms"></div><div class="ms"></div></div></div></div>
+      <div class="mini"><span class="mlabel">Warnings Found</span><span class="mpill warn">2</span><div class="mini-grid"></div><div class="mini-content"><div class="mhex"></div><div class="medge"></div><div class="mjob"><div class="ms"></div><div class="ms crit"></div></div></div></div>
+      <div class="mini"><span class="mlabel">Secure &amp; Ready</span><span class="mpill secure">secure</span><div class="mini-grid"></div><div class="mini-content"><div class="mhex"></div><div class="medge"></div><div class="mjob"><div class="ms"></div><div class="ms"></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Theme directions</h2>
+    <div class="sub">One direction (CI/CD dark console), three token treatments. A = recommended. Pick one, or mix (e.g. A layout + C accent).</div>
+    <div class="strip themes">
+      <div class="mini"><span class="mlabel">A · Dark console</span><span class="tname">Theme A (recommended)</span><div class="mini-grid"></div><div class="mini-content"><div class="mhex"></div><div class="medge"></div><div class="mjob"><div class="ms"></div><div class="ms crit"></div></div></div></div>
+      <div class="mini tB"><span class="mlabel">B · Paper + ink</span><span class="tname">Theme B</span><div class="mini-grid"></div><div class="mini-content"><div class="mhex"></div><div class="medge"></div><div class="mjob"><div class="ms"></div><div class="ms crit"></div></div></div></div>
+      <div class="mini tC"><span class="mlabel">C · Dark + accent emphasis</span><span class="tname">Theme C</span><div class="mini-grid"></div><div class="mini-content"><div class="mhex"></div><div class="medge"></div><div class="mjob"><div class="ms"></div><div class="ms crit"></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Anti-slop self-check:</b> no purple gradients · no emoji icons (Plex Mono glyphs only) · no card+left-border-accent filler · one accent (rust/terracotta) · semantic red/amber/green only on linter status · <span class="accent">real content</span> throughout (verified <b>@v7</b> action majors, real injection example + the exact <code>env:</code> fix from GitHub Docs). The one motion budget: the dashed rust <code>needs:</code> edge draws build → deploy.
+  </div>
+
+  <div class="foot"><span>MasarCI · design checkpoint</span><span>IBM Plex Sans + Plex Mono</span><span>oklch tokens</span><span>static HTML — no React</span></div>
+</div>
+</body>
+</html>
