@@ -99,6 +99,10 @@ The app builds to a static `out/` folder. When deploy is un-deferred, options re
 - **Vercel:** `vercel` (auto-detects Next.js; respects `output: 'export'`).
 - **Any static host** (Netlify, Cloudflare Pages, S3 + CloudFront): upload `out/`.
 
+### SEO deployment variable
+
+Set `NEXT_PUBLIC_SITE_URL` in the production environment to the canonical origin (for example, `https://masarci.example.com`, without a trailing slash). This enables absolute canonical/social URLs, the sitemap link in `robots.txt`, and `/sitemap.xml` generation.
+
 ## Sync (git)
 
 ```bash

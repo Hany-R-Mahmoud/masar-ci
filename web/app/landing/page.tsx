@@ -1,5 +1,24 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { WebGLFlowHero } from "@/components/WebGLFlowHero";
+import { getSiteUrl } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Visual GitHub Actions Builder",
+  alternates: { canonical: "/" },
+  robots: { index: false, follow: true },
+};
+
+const siteUrl = getSiteUrl();
+const structuredData = siteUrl
+  ? {
+      "@context": "https://schema.org",
+      "@graph": [
+        { "@type": "WebSite", "@id": `${siteUrl}/#website`, url: siteUrl, name: "MasarCI", description: "Visual GitHub Actions workflow builder with security linting." },
+        { "@type": "SoftwareApplication", "@id": `${siteUrl}/#application`, name: "MasarCI", url: siteUrl, applicationCategory: "DeveloperApplication", operatingSystem: "Web", description: "Build, inspect, lint, and export GitHub Actions workflows." },
+      ],
+    }
+  : null;
 
 const features = [
   ["01", "Visual builder", "Arrange triggers, jobs, and steps as a readable path."],
@@ -10,6 +29,7 @@ const features = [
 export default function LandingPage() {
   return (
     <main className="landing-page">
+      {structuredData && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />}
       <div className="landing-grid" aria-hidden="true" />
       <div className="landing-inner">
         <header className="landing-header">
@@ -21,7 +41,7 @@ export default function LandingPage() {
           <div className="landing-copy">
             <p className="landing-eyebrow">Build the path</p>
             <h1>Make your CI <i>legible.</i></h1>
-            <p className="landing-lede">MasarCI turns YAML into a workflow you can see, inspect, and improve before it reaches production.</p>
+            <p className="landing-lede">MasarCI is a visual GitHub Actions workflow builder with security linting, so you can see, inspect, and improve CI before it reaches production.</p>
             <div className="landing-actions">
               <Link href="/workstation" className="landing-cta">Open builder <span aria-hidden="true">↗</span></Link>
               <a href="#system" className="landing-quiet-link">See the system ↓</a>

@@ -1,0 +1,15 @@
+# MasarCI
+
+MasarCI is a visual GitHub Actions workflow builder with security linting. Developers can arrange triggers, jobs, and steps, inspect generated YAML, and resolve common workflow security findings before production.
+
+## Important pages
+
+- Home: /
+- Workflow builder: /workstation (interactive tool; not an indexable content page)
+
+## Product capabilities
+
+- Visual workflow construction
+- GitHub Actions YAML generation
+- Security linting for workflow anti-patterns
+- Safe auto-fixes and downloadable YAML
