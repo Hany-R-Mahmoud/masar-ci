@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "slug": "masar-ci",
+  "title": {
+    "en": "Masar Ci",
+    "ar": "Masar Ci"
+  },
+  "summary": {
+    "en": "A project managed in the Apex Yard workspace.",
+    "ar": "A project managed in the Apex Yard workspace."
+  },
+  "status": "showcase",
+  "portfolio": true,
+  "category": "Tools",
+  "tech_stack": [],
+  "features": [
+    {
+      "en": "Status: showcase",
+      "ar": "Status: showcase"
+    },
+    {
+      "en": "Category: Tools",
+      "ar": "Category: Tools"
+    },
+    {
+      "en": "Source of truth: docs/portfolio.json",
+      "ar": "Source of truth: docs/portfolio.json"
+    }
+  ],
+  "progress": {
+    "en": "Classified as showcase-ready by Apex Yard; this snapshot reflects the current repository evidence.",
+    "ar": "Classified as showcase-ready by Apex Yard; this snapshot reflects the current repository evidence."
+  },
+  "issues": [
+    {
+      "en": "No application manifest was detected in the workspace.",
+      "ar": "No application manifest was detected in the workspace."
+    },
+    {
+      "en": "No test command is declared in package.json.",
+      "ar": "No test command is declared in package.json."
+    },
+    {
+      "en": "No conventional test directory was detected.",
+      "ar": "No conventional test directory was detected."
+    }
+  ],
+  "suggestions": [
+    {
+      "en": "Add a focused automated test command for the highest-risk behavior.",
+      "ar": "Add a focused automated test command for the highest-risk behavior."
+    },
+    {
+      "en": "Add reviewed screenshots and a fuller case study when visual evidence is available.",
+      "ar": "Add reviewed screenshots and a fuller case study when visual evidence is available."
+    }
+  ],
+  "commands": {
+    "install": "npm install"
+  },
+  "repository": {
+    "branch": "main",
+    "sync": "github",
+    "github": "https://github.com/Hany-R-Mahmoud/masar-ci"
+  },
+  "source": {
+    "workspace": "workspace/masar-ci",
+    "last_reviewed": "2026-07-29"
+  }
+}
