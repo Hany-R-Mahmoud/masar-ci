@@ -24,6 +24,7 @@ import { ImportModal } from "@/components/ImportModal";
 import { cn } from "@/lib/cn";
 import { createWorkspace, isWorkspaceState, makeWorkflowId, touchRecent, type WorkspaceState } from "@/lib/workspace";
 import { WorkflowTabs, type WorkflowTabView } from "@/components/WorkflowTabs";
+import { PwaInstallAction } from "@/components/pwa/PwaInstallAction";
 
 const STORAGE_KEY = "masarci:workflow:v1";
 const WORKSPACE_STORAGE_KEY = "masarci:workspace:v1";
@@ -345,19 +346,24 @@ export default function Page() {
           <button onClick={newWorkflow} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
             New
           </button>
+          <PwaInstallAction compact />
         </div>
       </header>
 
       <WorkflowTabs tabs={openTabs} activeId={workspace.activeId} onSelect={activateWorkflow} onClose={closeWorkflow} onNew={newWorkflow} />
 
-      <div className="mobile-workspace-tools" aria-label="Mobile workspace panels">
-        <button type="button" aria-pressed={mobilePanel === "resources"} onClick={() => setMobilePanel(mobilePanel === "resources" ? null : "resources")}>
-          Resources
+      <nav className="mobile-workspace-tools" aria-label="Mobile workspace navigation">
+        <button type="button" aria-pressed={mobilePanel === null} onClick={() => setMobilePanel(null)}>
+          <span aria-hidden="true">⌂</span>Canvas
         </button>
         <button type="button" aria-pressed={mobilePanel === "yaml"} onClick={() => setMobilePanel(mobilePanel === "yaml" ? null : "yaml")}>
-          YAML &amp; security
+          <span aria-hidden="true">≡</span>YAML
         </button>
-      </div>
+        <button type="button" aria-pressed={mobilePanel === "resources"} onClick={() => setMobilePanel(mobilePanel === "resources" ? null : "resources")}>
+          <span aria-hidden="true">◇</span>Resources
+        </button>
+        <PwaInstallAction compact />
+      </nav>
 
       <div
         id="workflow-workspace-panel"

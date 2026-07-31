@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "MasarCI — Visual GitHub Actions Builder",
+  "short_name": "MasarCI",
+  "description": "Build GitHub Actions workflows visually and lint them for security anti-patterns.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#2d2f34",
+  "background_color": "#2d2f34",
+  "icons": [
+    { "src": "/icons/masar-ci-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/masar-ci-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

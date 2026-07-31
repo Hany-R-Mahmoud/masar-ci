@@ -1,0 +1,43 @@
+.pwa-install-promotion {
+  position: fixed;
+  z-index: 80;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  max-width: min(42rem, calc(100vw - 2rem));
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 0.3rem;
+  background: var(--color-surface);
+  box-shadow: 0 1rem 3rem color-mix(in oklch, var(--color-bg) 70%, transparent);
+}
+.pwa-install-promotion strong { color: var(--color-ink); font-size: 0.92rem; }
+.pwa-install-promotion-actions { display: flex; align-items: center; gap: 0.45rem; flex-shrink: 0; }
+.pwa-install-eyebrow { margin: 0 0 0.25rem; color: var(--color-accent); font: 0.62rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.pwa-install-primary, .pwa-install-secondary, .pwa-install-dismiss, .pwa-install-copy, .pwa-install-close {
+  border-radius: 0.25rem;
+  font: 600 0.72rem var(--font-mono);
+  cursor: pointer;
+}
+.pwa-install-primary { min-height: 2.15rem; padding: 0 0.8rem; border: 1px solid var(--color-accent); background: var(--color-accent); color: oklch(.16 .02 52); }
+.pwa-install-secondary, .pwa-install-dismiss { min-height: 2.15rem; padding: 0 0.7rem; border: 1px solid var(--color-border-strong); background: var(--color-surface-2); color: var(--color-ink-muted); }
+.pwa-install-dismiss { border-color: transparent; background: transparent; }
+.pwa-install-overlay { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 1rem; background: color-mix(in oklch, var(--color-bg) 74%, transparent); }
+.pwa-install-dialog { position: relative; width: min(34rem, 100%); max-height: calc(100dvh - 2rem); overflow: auto; padding: 1.45rem; border: 1px solid var(--color-border-strong); border-radius: 0.35rem; background: var(--color-surface); box-shadow: 0 1.5rem 4rem color-mix(in oklch, var(--color-bg) 75%, transparent); }
+.pwa-install-dialog h2 { margin: 0.35rem 0 0.75rem; color: var(--color-ink); font-size: clamp(1.45rem, 4vw, 2rem); letter-spacing: -.04em; }
+.pwa-install-dialog p:not(.pwa-install-eyebrow):not(.pwa-install-note) { color: var(--color-ink-muted); font-size: 0.94rem; line-height: 1.6; }
+.pwa-install-note { color: var(--color-ink-faint); font: 0.7rem/1.5 var(--font-mono); }
+.pwa-install-close { position: absolute; top: 0.6rem; right: 0.7rem; width: 2rem; height: 2rem; border: 0; background: transparent; color: var(--color-ink-muted); font-size: 1.3rem; }
+.pwa-install-link-label { display: block; margin: 1.2rem 0 0.4rem; color: var(--color-ink-faint); font: 0.65rem var(--font-mono); text-transform: uppercase; letter-spacing: .12em; }
+.pwa-install-link-row { display: flex; gap: 0.45rem; }
+.pwa-install-link-row input { min-width: 0; flex: 1; height: 2.25rem; padding: 0 0.65rem; border: 1px solid var(--color-border-strong); border-radius: 0.25rem; background: var(--color-code-bg); color: var(--color-ink-muted); font: 0.7rem var(--font-mono); }
+.pwa-install-copy { min-width: 4.3rem; border: 1px solid var(--color-border-strong); background: var(--color-surface-2); color: var(--color-ink); }
+.pwa-install-dialog > .pwa-install-secondary { margin-top: 1rem; }
+@media (max-width: 760px) {
+  .pwa-install-promotion { right: 0.7rem; bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); left: 0.7rem; display: block; }
+  .pwa-install-promotion-actions { margin-top: 0.8rem; flex-wrap: wrap; }
+  .pwa-install-primary, .pwa-install-secondary, .pwa-install-dismiss { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .pwa-install-overlay, .pwa-install-promotion { transition: none; } }

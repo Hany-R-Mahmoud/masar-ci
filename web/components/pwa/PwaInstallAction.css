@@ -1,0 +1,16 @@
+.pwa-install-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 0.25rem;
+  background: color-mix(in oklch, var(--color-accent) 12%, var(--color-surface-2));
+  color: var(--color-accent);
+  font: 600 0.72rem var(--font-mono);
+  cursor: pointer;
+}
+.pwa-install-action:hover { background: color-mix(in oklch, var(--color-accent) 20%, var(--color-surface-2)); }
+.pwa-install-action--compact { min-height: 2.55rem; padding: 0 0.5rem; font-size: 0.65rem; }

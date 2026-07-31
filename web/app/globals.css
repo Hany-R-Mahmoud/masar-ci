@@ -147,22 +147,43 @@ body {
     min-height: 36px;
   }
 
+  .workstation-header__actions .pwa-install-action {
+    display: none;
+  }
+
   .mobile-workspace-tools {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--color-border);
+    position: fixed;
+    z-index: 50;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    padding: 7px 9px calc(7px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--color-border-strong);
     background: var(--color-surface);
+    box-shadow: 0 -0.8rem 2rem color-mix(in oklch, var(--color-bg) 30%, transparent);
   }
 
   .mobile-workspace-tools button {
-    min-height: 36px;
-    border: 1px solid var(--color-border-strong);
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 46px;
+    border: 1px solid transparent;
     border-radius: 4px;
     background: var(--color-surface-2);
     color: var(--color-ink-muted);
     font: 10px var(--font-mono);
+    cursor: pointer;
+  }
+
+  .mobile-workspace-tools button span {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--color-ink-faint);
+    font-size: 15px;
+    line-height: 1;
   }
 
   .mobile-workspace-tools button[aria-pressed="true"] {
@@ -171,8 +192,19 @@ body {
     color: var(--color-accent);
   }
 
+  .mobile-workspace-tools .pwa-install-action {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 0.35rem;
+    border-color: var(--color-accent);
+    background: color-mix(in oklch, var(--color-accent) 12%, var(--color-surface-2));
+    color: var(--color-accent);
+  }
+
   .workspace-grid {
     grid-template-columns: minmax(0, 1fr);
+    margin-bottom: calc(67px + env(safe-area-inset-bottom, 0px));
   }
 
   .workspace-grid__tray {
@@ -240,6 +272,7 @@ body {
 .landing-grid { position: absolute; inset: 0; pointer-events: none; opacity: .24; background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 64px 64px; mask-image: linear-gradient(to bottom, #000, transparent 72%); }
 .landing-inner { position: relative; max-width: 1320px; margin: 0 auto; padding: 0 32px; }
 .landing-header { display: flex; justify-content: space-between; padding: 20px 0 28px; color: var(--color-ink-faint); font: 10px var(--font-mono); letter-spacing: .06em; }
+.landing-header-tools { display: inline-flex; align-items: center; gap: 0.8rem; }
 .landing-wordmark { color: var(--color-ink); font-size: 14px; letter-spacing: -.03em; }
 .landing-wordmark span, .landing-footer span span { color: var(--color-accent); }
 .landing-hero { min-height: 716px; display: grid; grid-template-columns: minmax(300px, .9fr) minmax(460px, 1.1fr); align-items: center; gap: 28px; padding: 72px 0 110px; }
@@ -307,6 +340,7 @@ body {
   .landing-inner { padding: 0 18px; }
   .landing-header { gap: 16px; font-size: 9px; }
   .landing-header > span { text-align: right; }
+  .landing-header-tools { align-items: flex-end; flex-direction: column; gap: 0.45rem; }
   .landing-hero { min-height: auto; padding: 64px 0 80px; }
   .landing-copy h1 { font-size: clamp(52px, 15vw, 78px); }
   .landing-meta { margin-top: 44px; }

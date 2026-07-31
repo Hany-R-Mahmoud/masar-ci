@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LandingHeroMedia } from "@/components/LandingHeroMedia";
+import { PwaInstallAction } from "@/components/pwa/PwaInstallAction";
 import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default function LandingPage() {
       <div className="landing-inner">
         <header className="landing-header">
           <Link href="/" className="landing-wordmark">masar<span>·</span>ci</Link>
-          <span>Visual GitHub Actions builder · security linter</span>
+          <span className="landing-header-tools"><span>Visual GitHub Actions builder · security linter</span><PwaInstallAction compact /></span>
         </header>
 
         <section className="landing-hero">

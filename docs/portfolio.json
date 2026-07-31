@@ -12,11 +12,20 @@
   "status": "showcase",
   "portfolio": true,
   "category": "Tools",
-  "tech_stack": [],
+  "tech_stack": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "PWA"
+  ],
   "features": [
     {
-      "en": "Current feature inventory: Unknown / verify.",
-      "ar": "Current feature inventory: Unknown / verify."
+      "en": "Visual GitHub Actions workflow builder with security linting and YAML export.",
+      "ar": "منشئ مرئي لسير عمل GitHub Actions مع فحص أمني وتصدير YAML."
+    },
+    {
+      "en": "Installable PWA shell with WebView guidance and mobile workspace bottom navigation.",
+      "ar": "غلاف PWA قابل للتثبيت مع إرشادات لمتصفحات WebView وشريط تنقل سفلي لمساحة العمل على الهاتف."
     }
   ],
   "progress": {
@@ -25,23 +34,11 @@
   },
   "issues": [
     {
-      "en": "No application manifest was detected in the workspace.",
-      "ar": "No application manifest was detected in the workspace."
-    },
-    {
-      "en": "No test command is declared in package.json.",
-      "ar": "No test command is declared in package.json."
-    },
-    {
       "en": "No conventional test directory was detected.",
       "ar": "No conventional test directory was detected."
     }
   ],
   "suggestions": [
-    {
-      "en": "Add a focused automated test command for the highest-risk behavior.",
-      "ar": "Add a focused automated test command for the highest-risk behavior."
-    },
     {
       "en": "Add reviewed screenshots and a fuller case study when visual evidence is available.",
       "ar": "Add reviewed screenshots and a fuller case study when visual evidence is available."
@@ -57,6 +54,6 @@
   },
   "source": {
     "workspace": "workspace/masar-ci",
-    "last_reviewed": "2026-07-29"
+    "last_reviewed": "2026-07-31"
   }
 }

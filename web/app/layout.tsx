@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import PwaProvider from "@/components/pwa/PwaProvider";
+import "@/components/pwa/PwaInstallAction.css";
+import "@/components/pwa/PwaInstallPrompt.css";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -41,10 +44,23 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/masar-ci.png",
-    apple: "/masar-ci.png",
+    apple: "/icons/masar-ci-192.png",
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "MasarCI",
+    statusBarStyle: "black-translucent",
   },
   robots: { index: true, follow: true },
 };
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#2d2f34",
+  colorScheme: "dark",
+} as const;
 
 export default function RootLayout({
   children,
@@ -55,8 +71,10 @@ export default function RootLayout({
       className={`${plexSans.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        {children}
-        <Analytics />
+        <PwaProvider>
+          {children}
+          <Analytics />
+        </PwaProvider>
       </body>
     </html>
   );
