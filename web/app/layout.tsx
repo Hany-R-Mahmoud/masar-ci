@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     url: siteUrl,
-    images: [{ url: siteUrl ? `${siteUrl}/masar-ci.png` : "/masar-ci.png", width: 1024, height: 1024, alt: "MasarCI logo" }],
+    images: [{ url: siteUrl ? `${siteUrl}/social-card.png` : "/social-card.png", type: "image/png", width: 1200, height: 630, alt: "MasarCI — visual GitHub Actions builder and security linter" }],
   },
   twitter: {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: [siteUrl ? `${siteUrl}/masar-ci.png` : "/masar-ci.png"],
+    images: [{ url: siteUrl ? `${siteUrl}/social-card.png` : "/social-card.png", alt: "MasarCI — visual GitHub Actions builder and security linter" }],
   },
   icons: {
     icon: "/masar-ci.png",
