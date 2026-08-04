@@ -1,9 +1,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 const API_URL = 'https://dev2stage.vercel.app/api/visitors';
+
 export default function StandaloneVisitorCounter() {
   const [count, setCount] = useState<number | null>(null);
-  useEffect(() => { let active = true; const idKey = 'standalone_visitor_id_v1'; const countKey = 'standalone_visitor_count_v1:masar-ci'; const seenKey = 'standalone_visitor_seen_v1:masar-ci'; let id = window.localStorage.getItem(idKey); if (!id) { id = typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`; window.localStorage.setItem(idKey, id); } const fallback = () => { const old = Number(window.localStorage.getItem(countKey)) || 0; const next = window.localStorage.getItem(seenKey) === '1' ? old || 1 : old + 1; window.localStorage.setItem(countKey, String(next)); window.localStorage.setItem(seenKey, '1'); if (active) setCount(next || 1); }; void fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visitorId: id, appSlug: 'masar-ci' }) }).then(async (r) => { if (!r.ok) throw new Error('counter'); const data = await r.json() as { appCount?: number }; if (active && typeof data.appCount === 'number') setCount(data.appCount); }).catch(fallback); return () => { active = false; }; }, []);
-  return <div className="pointer-events-none fixed bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-full border border-slate-700 bg-[#2d2f34]/95 px-3 py-1.5 text-[10px] text-slate-300 shadow-lg backdrop-blur-md"><span className="inline-flex items-center gap-2 whitespace-nowrap" title={`MasarCI visitors: ${count ?? '…'}`}><svg className="h-3.5 w-3.5 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /></svg><span className="font-semibold uppercase tracking-[0.14em]">MasarCI visitors</span><span className="font-mono font-bold tabular-nums" aria-live="polite">{count ?? '—'}</span></span></div>;
+  useEffect(() => {
+    let active = true;
+    const idKey = 'standalone_visitor_id_v1';
+    const countKey = 'standalone_visitor_count_v1:masar-ci';
+    const seenKey = 'standalone_visitor_seen_v1:masar-ci';
+    let id = window.localStorage.getItem(idKey);
+    if (!id) {
+      id = typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `visitor-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      window.localStorage.setItem(idKey, id);
+    }
+    const fallback = () => {
+      const old = Number(window.localStorage.getItem(countKey)) || 0;
+      const next = window.localStorage.getItem(seenKey) === '1' ? old || 1 : old + 1;
+      window.localStorage.setItem(countKey, String(next));
+      window.localStorage.setItem(seenKey, '1');
+      if (active) setCount(next || 1);
+    };
+    void fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visitorId: id, appSlug: 'masar-ci' }) })
+      .then(async (response) => { if (!response.ok) throw new Error('counter'); const data = await response.json() as { appCount?: number }; if (active && typeof data.appCount === 'number') setCount(data.appCount); })
+      .catch(fallback);
+    return () => { active = false; };
+  }, []);
+  return (
+    <div className="mx-auto flex w-full max-w-6xl justify-center border-t border-slate-700 bg-[#2d2f34] px-4 py-3 text-xs text-slate-300">
+      <span className="inline-flex items-center gap-2 whitespace-nowrap" title={`MasarCI visitors: ${count ?? '…'}`}>
+        <svg className="h-3.5 w-3.5 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /></svg>
+        <span className="font-semibold uppercase tracking-[0.14em]">MasarCI visitors</span>
+        <span className="font-mono font-bold tabular-nums" aria-live="polite">{count ?? '—'}</span>
+      </span>
+    </div>
+  );
 }
