@@ -5,6 +5,7 @@ import PwaProvider from "@/components/pwa/PwaProvider";
 import "@/components/pwa/PwaInstallAction.css";
 import "@/components/pwa/PwaInstallPrompt.css";
 import { getSiteUrl } from "@/lib/site";
+import StandaloneVisitorCounter from "@/components/StandaloneVisitorCounter";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -73,6 +74,7 @@ export default function RootLayout({
       <body className="min-h-full">
         <PwaProvider>
           {children}
+          <StandaloneVisitorCounter />
           <Analytics />
         </PwaProvider>
       </body>
