@@ -35,13 +35,13 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     url: siteUrl,
-    images: [{ url: siteUrl ? `${siteUrl}/social-card.png` : "/social-card.png", type: "image/png", width: 1200, height: 630, alt: "MasarCI — visual GitHub Actions builder and security linter" }],
+    images: [{ url: siteUrl ? `${siteUrl}/social-card-v2.png` : "/social-card-v2.png", type: "image/png", width: 1200, height: 630, alt: "MasarCI — visual GitHub Actions builder and security linter" }],
   },
   twitter: {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: siteUrl ? `${siteUrl}/social-card.png` : "/social-card.png", alt: "MasarCI — visual GitHub Actions builder and security linter" }],
+    images: [{ url: siteUrl ? `${siteUrl}/social-card-v2.png` : "/social-card-v2.png", alt: "MasarCI — visual GitHub Actions builder and security linter" }],
   },
   icons: {
     icon: "/masar-ci.png",
