@@ -163,12 +163,12 @@ export function WebGLFlowHero() {
   }, []);
 
   return (
-    <div className="flow-hero-stage" role="img" aria-label="Animated 3D workflow graph showing the MasarCI sample pipeline">
+    <div className="flow-hero-stage" role="img" aria-label="Actions workflow preview showing trigger, build, and deploy">
       {supported ? <canvas ref={canvasRef} aria-hidden="true" /> : <div className="flow-fallback" aria-hidden="true" />}
-      <div className="flow-stage-status">● trigger → build → deploy</div>
+      <div className="flow-stage-status">sample path / Actions</div>
       <div className="flow-label flow-label-trigger"><b>on: push</b><small>branches: [main]</small></div>
-      <div className="flow-label flow-label-build"><b>build</b><small>ubuntu-latest · 3 steps</small></div>
-      <div className="flow-label flow-label-deploy"><b>deploy</b><small>needs: [build] · <em>finding</em></small></div>
+      <div className="flow-label flow-label-build"><b>build</b><small>ubuntu-latest / 3 steps</small></div>
+      <div className="flow-label flow-label-deploy"><b>deploy</b><small>needs: [build] / <em>finding</em></small></div>
       <div className="flow-stage-caption">the whole path, in one frame.</div>
     </div>
   );

@@ -1,9 +1,9 @@
 {
   "id": "/",
-  "name": "MasarCI — Visual GitHub Actions Builder",
+  "name": "MasarCI — Visual DevOps Workbench",
   "short_name": "MasarCI",
-  "description": "Build GitHub Actions workflows visually and lint them for security anti-patterns.",
-  "start_url": "/",
+  "description": "Author and review Actions, Docker, Kubernetes, and Terraform artifacts locally.",
+  "start_url": "/workstation/actions",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",

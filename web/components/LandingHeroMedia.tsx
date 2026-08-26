@@ -20,7 +20,7 @@ export function LandingHeroMedia() {
   if (videoFailed || reducedMotion !== false) return <WebGLFlowHero />;
 
   return (
-    <div className="flow-hero-stage" role="img" aria-label="Animated workflow video showing the MasarCI sample pipeline">
+    <div className="flow-hero-stage" role="img" aria-label="Actions workflow preview showing trigger, build, and deploy">
       <video
         className="landing-hero-video"
         autoPlay
@@ -33,10 +33,10 @@ export function LandingHeroMedia() {
       >
         <source src={VIDEO_URL} type="video/mp4" />
       </video>
-      <div className="flow-stage-status">● trigger → build → deploy</div>
+      <div className="flow-stage-status">sample path / Actions</div>
       <div className="flow-label flow-label-trigger"><b>on: push</b><small>branches: [main]</small></div>
-      <div className="flow-label flow-label-build"><b>build</b><small>ubuntu-latest · 3 steps</small></div>
-      <div className="flow-label flow-label-deploy"><b>deploy</b><small>needs: [build] · <em>finding</em></small></div>
+      <div className="flow-label flow-label-build"><b>build</b><small>ubuntu-latest / 3 steps</small></div>
+      <div className="flow-label flow-label-deploy"><b>deploy</b><small>needs: [build] / <em>finding</em></small></div>
       <div className="flow-stage-caption">the whole path, in one frame.</div>
     </div>
   );

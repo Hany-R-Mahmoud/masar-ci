@@ -6,8 +6,8 @@
     "ar": "Masar Ci"
   },
   "summary": {
-    "en": "A project managed in the Apex Yard workspace.",
-    "ar": "A project managed in the Apex Yard workspace."
+    "en": "A local-first visual workbench for authoring and reviewing delivery artifacts.",
+    "ar": "مساحة عمل مرئية ومحلية أولاً لتأليف ومراجعة ملفات التسليم."
   },
   "status": "showcase",
   "portfolio": true,
@@ -26,6 +26,14 @@
     {
       "en": "Installable PWA shell with WebView guidance and mobile workspace bottom navigation.",
       "ar": "غلاف PWA قابل للتثبيت مع إرشادات لمتصفحات WebView وشريط تنقل سفلي لمساحة العمل على الهاتف."
+    },
+    {
+      "en": "Shared three-pane Docker workbench with grouped Compose and Dockerfile authoring catalogs, draggable topology, synchronized source, and static review.",
+      "ar": "مساحة عمل Docker مشتركة بثلاثة أجزاء مع كتالوجات تأليف منظمة لـ Compose وDockerfile وطوبولوجيا قابلة للسحب ومصدر متزامن ومراجعة ثابتة."
+    },
+    {
+      "en": "Visual Kubernetes resource authoring and immutable, redacted Terraform plan review with risk, topology, and change-type lenses in the same workstation.",
+      "ar": "تأليف مرئي لموارد Kubernetes ومراجعة منقحة وغير قابلة للتعديل لخطة Terraform عبر عدسات المخاطر والطوبولوجيا وأنواع التغيير ضمن مساحة العمل نفسها."
     }
   ],
   "progress": {
@@ -34,8 +42,8 @@
   },
   "issues": [
     {
-      "en": "No conventional test directory was detected.",
-      "ar": "No conventional test directory was detected."
+      "en": "Live cluster, Docker daemon, Terraform execution, and authoritative cost estimation are intentionally unsupported.",
+      "ar": "الوصول المباشر إلى Kubernetes وتشغيل Docker أو Terraform وتقدير التكلفة الموثوق غير مدعوم عمداً."
     }
   ],
   "suggestions": [
@@ -45,7 +53,8 @@
     }
   ],
   "commands": {
-    "install": "npm install"
+    "install": "cd web && pnpm install --frozen-lockfile",
+    "verify": "cd web && pnpm lint && pnpm typecheck && pnpm test:run && pnpm build"
   },
   "repository": {
     "branch": "main",
@@ -54,6 +63,6 @@
   },
   "source": {
     "workspace": "workspace/masar-ci",
-    "last_reviewed": "2026-07-31"
+    "last_reviewed": "2026-08-25"
   }
 }

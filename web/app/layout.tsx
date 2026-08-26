@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
 import PwaProvider from "@/components/pwa/PwaProvider";
 import "@/components/pwa/PwaInstallAction.css";
 import "@/components/pwa/PwaInstallPrompt.css";
 import { getSiteUrl } from "@/lib/site";
-import StandaloneVisitorCounter from "@/components/StandaloneVisitorCounter";
+import PrivacyTelemetry from "@/components/PrivacyTelemetry";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -20,9 +19,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 const siteUrl = getSiteUrl();
-const siteTitle = "MasarCI — Visual GitHub Actions Builder & Security Linter";
+const siteTitle = "MasarCI — Visual DevOps Workbench";
 const siteDescription =
-  "Build GitHub Actions workflows visually and lint them for security anti-patterns before they reach production.";
+  "Author and review Actions, Docker, Kubernetes, and Terraform artifacts locally with deterministic security evidence.";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl ? new URL(siteUrl) : undefined,
@@ -35,13 +34,13 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     url: siteUrl,
-    images: [{ url: siteUrl ? `${siteUrl}/social-card-v2.png` : "/social-card-v2.png", type: "image/png", width: 1200, height: 630, alt: "MasarCI — visual GitHub Actions builder and security linter" }],
+    images: [{ url: siteUrl ? `${siteUrl}/social-card-v2.png` : "/social-card-v2.png", type: "image/png", width: 1200, height: 630, alt: "MasarCI visual DevOps workbench" }],
   },
   twitter: {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: siteUrl ? `${siteUrl}/social-card-v2.png` : "/social-card-v2.png", alt: "MasarCI — visual GitHub Actions builder and security linter" }],
+    images: [{ url: siteUrl ? `${siteUrl}/social-card-v2.png` : "/social-card-v2.png", alt: "MasarCI visual DevOps workbench" }],
   },
   icons: {
     icon: "/masar-ci.png",
@@ -74,8 +73,7 @@ export default function RootLayout({
       <body className="min-h-full">
         <PwaProvider>
           {children}
-          <StandaloneVisitorCounter />
-          <Analytics />
+          <PrivacyTelemetry />
         </PwaProvider>
       </body>
     </html>

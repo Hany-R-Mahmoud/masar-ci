@@ -8,6 +8,19 @@ export const PWA_TIMING = {
   installedHintTtlMs: 30 * 24 * 60 * 60 * 1000,
 } as const;
 
+export const PWA_CACHE_PREFIX = "masarci-shell-";
+
+type PwaCleanupRegistration = {
+  readonly scriptUrl: string | null;
+  readonly unregister: () => Promise<boolean>;
+};
+
+export type PwaCleanupRuntime = {
+  readonly listRegistrations: () => Promise<readonly PwaCleanupRegistration[]>;
+  readonly listCaches: () => Promise<readonly string[]>;
+  readonly deleteCache: (name: string) => Promise<boolean>;
+};
+
 export type PwaSurface = "ios" | "android" | "standalone" | "webview" | "browser";
 
 export type PwaEnvironment = {
@@ -16,6 +29,24 @@ export type PwaEnvironment = {
   isStandalone: boolean;
   isEmbeddedWebView: boolean;
 };
+
+export async function clearDevelopmentPwaState(runtime: PwaCleanupRuntime): Promise<void> {
+  const [registrationsResult, cachesResult] = await Promise.allSettled([
+    runtime.listRegistrations(),
+    runtime.listCaches(),
+  ]);
+  const registrations = registrationsResult.status === "fulfilled" ? registrationsResult.value : [];
+  const cacheNames = cachesResult.status === "fulfilled" ? cachesResult.value : [];
+
+  await Promise.allSettled([
+    ...registrations
+      .filter((registration) => registration.scriptUrl !== null && new URL(registration.scriptUrl).pathname === "/sw.js")
+      .map((registration) => registration.unregister()),
+    ...cacheNames
+      .filter((name) => name.startsWith(PWA_CACHE_PREFIX))
+      .map((name) => runtime.deleteCache(name)),
+  ]);
+}
 
 function getNavigator(): Navigator | null {
   return typeof navigator === "undefined" ? null : navigator;

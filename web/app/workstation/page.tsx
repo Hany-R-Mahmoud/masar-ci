@@ -21,10 +21,11 @@ import { YamlLintPanel } from "@/components/YamlLintPanel";
 import { CanvasErrorBoundary } from "@/components/CanvasErrorBoundary";
 import { StepEditor, type Selection } from "@/components/StepEditor";
 import { ImportModal } from "@/components/ImportModal";
-import { cn } from "@/lib/cn";
 import { createWorkspace, isWorkspaceState, makeWorkflowId, touchRecent, type WorkspaceState } from "@/lib/workspace";
 import { WorkflowTabs, type WorkflowTabView } from "@/components/WorkflowTabs";
 import { PwaInstallAction } from "@/components/pwa/PwaInstallAction";
+import { WorkbenchShell } from "@/components/workbench/WorkbenchShell";
+import { WorkspaceHeader, WorkspaceHeaderButton, type WorkspaceHeaderStatusTone } from "@/components/workbench/WorkspaceHeader";
 
 const STORAGE_KEY = "masarci:workflow:v1";
 const WORKSPACE_STORAGE_KEY = "masarci:workspace:v1";
@@ -167,10 +168,10 @@ export default function Page() {
 
   const state =
     !workflow.jobs.length && !workflow.on.length
-      ? { label: "Empty Workflow", cls: "bg-surface-2 text-ink-muted border-border" }
+      ? { label: "Empty Workflow", tone: "neutral" as WorkspaceHeaderStatusTone }
       : findings.length > 0
-        ? { label: `Warnings Found · ${findings.length}`, cls: "bg-[oklch(0.62_0.22_25/0.14)] text-critical border-[oklch(0.62_0.22_25/0.35)]" }
-        : { label: "Secure & Ready", cls: "bg-[oklch(0.72_0.15_150/0.14)] text-secure border-[oklch(0.72_0.15_150/0.35)]" };
+        ? { label: `Warnings Found · ${findings.length}`, tone: "warning" as WorkspaceHeaderStatusTone }
+        : { label: "Secure & Ready", tone: "success" as WorkspaceHeaderStatusTone };
 
   const onFix = useCallback((f: LintFinding) => {
     if (f.autoFix) setWorkflow((prev) => f.autoFix!(prev));
@@ -317,38 +318,24 @@ export default function Page() {
     .filter((tab): tab is NonNullable<typeof tab> => !!tab)
     .map((tab) => ({ id: tab.id, name: tab.workflow.name, dirty: generateYaml(tab.workflow) !== tab.savedYaml }));
   return (
-    <div className="flex h-[100dvh] min-h-0 flex-col">
-      <header className="workstation-header flex items-center gap-3.5 px-4 h-12 bg-surface border-b border-border">
-        <span className="workstation-header__brand font-mono text-base font-medium tracking-tight">
-          masar<span className="text-accent">·</span>ci
-        </span>
-        <input
-          value={workflow.name}
-          onChange={(e) => setWorkflow((p) => ({ ...p, name: e.target.value }))}
-          aria-label="workflow file name"
-          className="workstation-header__name bg-transparent border border-border text-ink font-mono text-[12.5px] px-2.5 py-1.5 rounded-md w-[248px] focus:outline-1 focus:outline-accent"
-        />
-        <span className="workstation-header__spacer flex-1" />
-        <span className={cn("workstation-header__status inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-[0.04em] px-2.5 py-1 rounded-full border", state.cls)}>
-          <span className="w-[7px] h-[7px] rounded-full bg-current" />
-          {state.label}
-        </span>
-        <div className="workstation-header__actions flex items-center gap-2">
-          <button onClick={copyYaml} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
-            Copy
-          </button>
-          <button onClick={openImport} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
-            Import
-          </button>
-          <button onClick={downloadYaml} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md bg-accent text-[oklch(0.16_0.02_52)] border border-transparent cursor-pointer">
-            Download .yml
-          </button>
-          <button onClick={newWorkflow} className="text-[12.5px] font-medium px-3 py-1.5 rounded-md border border-border-strong bg-surface-2 text-ink cursor-pointer">
-            New
-          </button>
+    <div className="flex h-full min-h-0 flex-col">
+      <WorkspaceHeader
+        domain="actions"
+        artifactName={workflow.name}
+        title="Actions workbench"
+        titleId="actions-workspace-title"
+        description="Author, inspect, and export GitHub Actions workflows."
+        onArtifactNameChange={(name) => setWorkflow((previous) => ({ ...previous, name }))}
+        status={state.label}
+        statusTone={state.tone}
+        actions={<>
+          <WorkspaceHeaderButton onClick={copyYaml}>Copy</WorkspaceHeaderButton>
+          <WorkspaceHeaderButton onClick={openImport}>Import</WorkspaceHeaderButton>
+          <WorkspaceHeaderButton variant="primary" onClick={downloadYaml}>Download .yml</WorkspaceHeaderButton>
+          <WorkspaceHeaderButton onClick={newWorkflow}>New</WorkspaceHeaderButton>
           <PwaInstallAction compact />
-        </div>
-      </header>
+        </>}
+      />
 
       <WorkflowTabs tabs={openTabs} activeId={workspace.activeId} onSelect={activateWorkflow} onClose={closeWorkflow} onNew={newWorkflow} />
 
@@ -365,23 +352,17 @@ export default function Page() {
         <PwaInstallAction compact />
       </nav>
 
-      <div
+      <WorkbenchShell
         id="workflow-workspace-panel"
-        role="tabpanel"
-        aria-labelledby={`workflow-tab-${workspace.activeId}`}
-        className="workspace-grid flex-1 min-h-0 relative"
-      >
-        <div className="workspace-grid__tray min-w-0 min-h-0">
-          <Tray onTemplate={loadTemplate} onAddItem={addItem} recent={recentTabs} onRecent={activateWorkflow} activeId={workspace.activeId} />
-        </div>
-        <div className="workspace-grid__canvas min-w-0 min-h-0">
+        labelledBy={`workflow-tab-${workspace.activeId}`}
+        tools={<Tray onTemplate={loadTemplate} onAddItem={addItem} recent={recentTabs} onRecent={activateWorkflow} activeId={workspace.activeId} />}
+        canvas={
           <CanvasErrorBoundary key={workspace.activeId} onRestore={() => setWorkflow(lastValidWorkflow.current)}>
             <Canvas model={workflow} positions={positions} findings={findings} handlers={handlers} canUndoMove={canUndoMove} onUndoMove={undoMove} />
           </CanvasErrorBoundary>
-        </div>
-        <div className="workspace-grid__inspector min-w-0 min-h-0">
-          <YamlLintPanel yaml={yaml} findings={findings} workflow={workflow} onFix={onFix} onCopy={copyYaml} />
-        </div>
+        }
+        inspector={<YamlLintPanel yaml={yaml} findings={findings} workflow={workflow} onFix={onFix} onCopy={copyYaml} />}
+      >
         {selection && (
           <StepEditor
             selection={selection}
@@ -405,7 +386,7 @@ export default function Page() {
             </div>
           </aside>
         )}
-      </div>
+      </WorkbenchShell>
       <ImportModal
         open={importing}
         text={importText}

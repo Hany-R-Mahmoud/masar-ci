@@ -2,11 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   buildAndroidBrowserIntent,
   buildHashTransportUrl,
+  clearDevelopmentPwaState,
   getPwaSurface,
   hasRecentDismissal,
   isEmbeddedWebView,
   isTimestampRecent,
   PWA_STORAGE_KEYS,
+  type PwaCleanupRuntime,
 } from "@/lib/pwa";
 
 describe("PWA runtime helpers", () => {
@@ -40,5 +42,39 @@ describe("PWA runtime helpers", () => {
     expect(transported.hash).toBe("");
     expect(transported.searchParams.get("__pwa_hash")).toBe("canvas");
     expect(PWA_STORAGE_KEYS.dismissedAt).toBe("masarci:pwa-dismissed-at");
+  });
+
+  it("removes only MasarCI service workers and caches during development", async () => {
+    // Given
+    const removed: string[] = [];
+    const runtime: PwaCleanupRuntime = {
+      listRegistrations: async () => [
+        {
+          scriptUrl: "http://localhost:3000/sw.js",
+          unregister: async () => {
+            removed.push("worker");
+            return true;
+          },
+        },
+        {
+          scriptUrl: "http://localhost:3000/other-sw.js",
+          unregister: async () => {
+            removed.push("other-worker");
+            return true;
+          },
+        },
+      ],
+      listCaches: async () => ["masarci-shell-v2", "other-cache"],
+      deleteCache: async (name) => {
+        removed.push(name);
+        return true;
+      },
+    };
+
+    // When
+    await clearDevelopmentPwaState(runtime);
+
+    // Then
+    expect(removed).toEqual(["worker", "masarci-shell-v2"]);
   });
 });

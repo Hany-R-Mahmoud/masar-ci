@@ -133,25 +133,18 @@ function Item({
   onAdd?: () => void;
 }) {
   return (
-    <div
+    <button
+      type="button"
       draggable={draggable}
       onDragStart={onDragStart}
-      tabIndex={0}
-      role="button"
       aria-label={`Add ${label} to canvas`}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onAdd?.();
-        }
-      }}
       onClick={onAdd}
-      className="flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 cursor-grab hover:bg-surface-2 hover:border-border focus:outline-1 focus:outline-accent active:opacity-60"
+      className="flex w-full items-center gap-2 rounded-md border border-transparent bg-transparent px-2 py-1.5 text-left cursor-grab hover:bg-surface-2 hover:border-border focus:outline-1 focus:outline-accent active:opacity-60"
     >
       <Glyph kind={glyph} />
       <span className="text-ink">{label}</span>
       {tag && <span className="ml-auto font-mono text-[10.5px] text-ink-faint">{tag}</span>}
-    </div>
+    </button>
   );
 }
 

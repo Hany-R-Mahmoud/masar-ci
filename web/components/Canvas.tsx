@@ -3,8 +3,6 @@
 import { useMemo, useRef } from "react";
 import {
   ReactFlow,
-  Background,
-  Controls,
   type Node,
   type Edge,
   type Connection,
@@ -17,6 +15,7 @@ import type { Workflow } from "@/lib/model/types";
 import type { LintFinding } from "@/lib/lint/lint";
 import { TriggerNode } from "./TriggerNode";
 import { JobNode, type JobNodeData } from "./JobNode";
+import { CanvasChrome } from "./workbench/CanvasChrome";
 
 const nodeTypes: NodeTypes = {
   trigger: TriggerNode as unknown as NodeTypes[string],
@@ -177,8 +176,7 @@ export function Canvas({
         nodesDraggable
         nodesConnectable
       >
-        <Background gap={24} size={1} color="var(--color-border)" />
-        <Controls className="!bg-surface !border-border" />
+        <CanvasChrome />
       </ReactFlow>
     </div>
   );

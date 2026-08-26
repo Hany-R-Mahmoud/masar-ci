@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   buildAndroidBrowserIntent,
   buildHashTransportUrl,
+  clearDevelopmentPwaState,
   getPwaEnvironment,
   getPwaSurface,
   getSafeStorage,
@@ -88,10 +89,32 @@ export default function PwaProvider({ children }: Readonly<{ children: React.Rea
     window.addEventListener("pageshow", onPageShow);
     window.addEventListener("visibilitychange", refreshEnvironment);
 
+    const registerServiceWorker = () => {
+      if ("serviceWorker" in navigator) {
+        void navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => undefined);
+      }
+    };
+
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        void navigator.serviceWorker.register("/sw.js", { scope: "/" });
-      }, { once: true });
+      window.addEventListener("load", registerServiceWorker, { once: true });
+    } else {
+      const serviceWorkers = "serviceWorker" in navigator ? navigator.serviceWorker : null;
+      const cacheStorage = "caches" in window ? window.caches : null;
+      void clearDevelopmentPwaState({
+        listRegistrations: async () => {
+          if (!serviceWorkers) return [];
+          const registrations = await serviceWorkers.getRegistrations();
+          return registrations.map((registration) => ({
+            scriptUrl: registration.active?.scriptURL
+              ?? registration.waiting?.scriptURL
+              ?? registration.installing?.scriptURL
+              ?? null,
+            unregister: () => registration.unregister(),
+          }));
+        },
+        listCaches: () => cacheStorage?.keys() ?? Promise.resolve([]),
+        deleteCache: (name) => cacheStorage?.delete(name) ?? Promise.resolve(false),
+      });
     }
 
     return () => {
@@ -100,6 +123,7 @@ export default function PwaProvider({ children }: Readonly<{ children: React.Rea
       window.removeEventListener("appinstalled", onAppInstalled);
       window.removeEventListener("pageshow", onPageShow);
       window.removeEventListener("visibilitychange", refreshEnvironment);
+      window.removeEventListener("load", registerServiceWorker);
     };
   }, []);
 

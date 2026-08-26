@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-08-25",
+  "baseBranch": "main",
+  "baseSha": "9ea638ab0584f2fa1740653fe86a3b632ee941f8",
+  "featureBranch": "codex/masarci-visual-devops-workbench",
+  "environment": {
+    "node": "v22.22.3",
+    "pnpm": "9.15.9",
+    "next": "16.2.11",
+    "react": "19.2.4",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  },
+  "commands": [
+    { "command": "pnpm install --frozen-lockfile", "cwd": "web", "result": "PASS", "detail": "lockfile up to date" },
+    { "command": "pnpm typecheck", "cwd": "web", "result": "PASS" },
+    { "command": "pnpm lint", "cwd": "web", "result": "PASS" },
+    { "command": "pnpm test:run", "cwd": "web", "result": "PASS", "files": 18, "tests": 49 },
+    { "command": "pnpm build", "cwd": "web", "result": "PASS", "staticRoutes": 13, "detail": "Required temporary network access for next/font Google font retrieval" }
+  ],
+  "legacyRoutes": ["/", "/landing", "/workstation", "/robots.txt", "/sitemap.xml", "/manifest.webmanifest", "/apple-icon.png", "/sw.js"],
+  "legacyStorageKeys": ["masarci:workflow:v1", "masarci:workspace:v1"],
+  "pwaStorageKeys": ["masarci:pwa-dismissed-at", "masarci:pwa-installed-at"],
+  "characterizationTestIds": ["BASE-ACTIONS-PARSE", "BASE-ACTIONS-GENERATE", "BASE-ACTIONS-LINT", "BASE-WORKSPACE-TABS", "BASE-PWA-HELPERS"],
+  "generatedOutputDigests": {},
+  "knownFailures": [
+    { "id": "BASE-PNPM-WORKSPACE-CONFIG", "status": "RESOLVED", "scope": "web/pnpm-workspace.yaml", "resolution": "declared the web package in pnpm-workspace.yaml" },
+    { "id": "BASE-NEXT-BUILD-LOCK", "status": "RESOLVED", "scope": "web/.next/lock", "resolution": "fresh exact production build completed" }
+  ]
+}

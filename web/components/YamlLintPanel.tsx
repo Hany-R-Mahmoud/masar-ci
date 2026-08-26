@@ -49,6 +49,7 @@ export function YamlLintPanel({
         <div className="flex items-center gap-2 px-3.5 py-2 border-b border-border bg-surface">
           <span className="font-mono text-[11px] font-semibold tracking-wide">deploy.yml</span>
           <button
+            type="button"
             onClick={onCopy}
             className="ml-auto font-mono text-[10.5px] text-ink-muted hover:text-accent cursor-pointer"
           >
