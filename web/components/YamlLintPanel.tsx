@@ -44,7 +44,7 @@ export function YamlLintPanel({
     return out;
   }, [findings]);
   return (
-    <div className="grid grid-rows-[1fr_248px] border-l border-border bg-surface min-w-0">
+    <div className="grid h-full min-h-0 min-w-0 grid-rows-[minmax(0,1fr)_248px] overflow-hidden border-l border-border bg-surface">
       <div className="flex flex-col bg-code-bg border-b border-border min-h-0">
         <div className="flex items-center gap-2 px-3.5 py-2 border-b border-border bg-surface">
           <span className="font-mono text-[11px] font-semibold tracking-wide">deploy.yml</span>
@@ -56,7 +56,7 @@ export function YamlLintPanel({
             copy
           </button>
         </div>
-        <div className="flex-1 overflow-auto py-3 font-mono text-xs leading-relaxed">
+        <div className="flex-1 min-h-0 overflow-auto py-3 font-mono text-xs leading-relaxed">
           {lines.map((ln, i) => (
             <YamlLine key={i} n={i + 1} text={ln} severity={lineSeverity.get(i + 1)} />
           ))}
@@ -86,7 +86,7 @@ export function YamlLintPanel({
             ))}
           </div>
         )}
-        <div className="flex-1 overflow-auto p-2">
+        <div className="flex-1 min-h-0 overflow-auto p-2">
           {findings.length === 0 ? (
             <div className="rounded-lg border border-[oklch(0.72_0.15_150/0.4)] bg-[oklch(0.72_0.15_150/0.14)] px-3 py-2.5">
               <div className="font-mono text-[10px] uppercase tracking-wide text-secure">Secure and Ready</div>

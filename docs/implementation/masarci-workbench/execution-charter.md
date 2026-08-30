@@ -9,9 +9,9 @@ Status: `IMPLEMENTATION_VERIFIED_WITH_LIMITATIONS`. `PRE-001` through `PRE-004` 
 - Repository root: `/Users/hanyramadan/new era/ops/apexyard-portfolio/workspace/masar-ci`
 - Product identity: MasarCI, confirmed by `README.md`, `docs/portfolio.json`, `web/package.json`, routes, and product copy.
 - Base branch: `main`
-- Base SHA: `9ea638ab0584f2fa1740653fe86a3b632ee941f8`
-- Feature branch: `codex/masarci-visual-devops-workbench`
-- Worktree: existing clean worktree; branch created directly from the recorded base.
+- Base SHA: `679a86f9d31525e5e0b5e917439dcb4542814d62`
+- Feature branch: `codex/masarci-gap-closure`
+- Worktree: feature branch created directly from current `main`; implementation in progress.
 - Remote: `origin` → `https://github.com/Hany-R-Mahmoud/masar-ci.git`
 - Rollback: switch back to `main`; no merge, deploy, push, PR, or external write is authorized.
 - Unrelated user changes: none at branch creation.
@@ -25,7 +25,7 @@ Status: `IMPLEMENTATION_VERIFIED_WITH_LIMITATIONS`. `PRE-001` through `PRE-004` 
 - Persistence: `masarci:workflow:v1` and `masarci:workspace:v1`; PWA and visitor fallback keys are separate.
 - PWA: web manifest, service worker, install provider/action, offline shell for `/` and `/workstation`.
 - Parsers: `js-yaml` plus repository canonical Actions model. Current import is normalized and does not preserve every unknown/comment/anchor.
-- Tests: Vitest/jsdom; 22 files / 56 tests pass. Browser evidence is manual smoke, not a repository-owned browser suite.
+- Tests: Vitest/jsdom; historical counts in prior records are stale. Fresh current-HEAD counts are required before release.
 - Design system: graphite dark surfaces, amber primary accent, IBM Plex Sans/Mono, semantic critical/warning/secure colors, desktop three-pane shell, mobile drawers/bottom navigation.
 
 ## Design-system decisions
@@ -66,7 +66,7 @@ Milestones follow the stable task IDs in `task-ledger.md`. One owner writes a mo
 - `pnpm install --frozen-lockfile`: PASS after restoring the missing workspace package declaration.
 - `pnpm lint`: PASS.
 - `pnpm typecheck`: PASS.
-- `pnpm test:run`: PASS, 22 files / 56 tests.
+- `pnpm test:run`: historical PASS record (22 files / 56 tests) is stale; fresh current-branch verification pending.
 - `pnpm build`: PASS, 13 static routes generated.
 - The production build currently fetches IBM Plex through `next/font/google`; a clean restricted-network build therefore needs the font asset available or temporary network access. This is an environment limitation, not an accepted offline-runtime dependency.
 - `next.config.ts` still skips Next's internal type validation; removing that escape hatch remains an implementation requirement even though the separate strict typecheck is green.

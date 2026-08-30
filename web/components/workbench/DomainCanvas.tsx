@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { MarkerType, ReactFlow, type Edge, type Node, type NodeTypes } from "@xyflow/react";
+import { MarkerType, ReactFlow, type Edge, type Node, type NodeTypes, type PanOnScrollMode } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import type { WorkspaceAnalysis } from "@/lib/domains/workspace-adapters";
 import type { ReviewLens } from "@/lib/domains/domain-tools";
@@ -77,6 +77,9 @@ export function DomainCanvas({ analysis, lens, positions, onAddTool, onMoveNode 
         onNodeDragStop={(_, node) => onMoveNode(node.id, node.position.x, node.position.y)}
         fitView
         fitViewOptions={{ padding: 0.25 }}
+        panOnScroll
+        panOnScrollMode={"free" as PanOnScrollMode}
+        zoomOnScroll={false}
         nodesDraggable
         nodesConnectable={false}
         elementsSelectable

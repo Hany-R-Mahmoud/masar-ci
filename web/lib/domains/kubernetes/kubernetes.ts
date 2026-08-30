@@ -1,5 +1,6 @@
-import { loadAll } from "js-yaml";
-import type { ArtifactGraph, Finding, ParseError, Result } from "@/lib/workbench/contracts";
+// TOKEN_POLICY_BATCHED_EXECUTION: include direct Pod specs in the bounded parser.
+import { dump, loadAll } from "js-yaml";
+import type { ArtifactGraph, Finding, FixPreview, ParseError, Result } from "@/lib/workbench/contracts";
 import { createFinding, sortFindings } from "@/lib/workbench/findings";
 import { checkArtifactSafety } from "@/lib/workbench/limits";
 import { isRecord, recordValue, stringMap, stringValue } from "@/lib/workbench/records";
@@ -20,19 +21,29 @@ export interface KubernetesResource {
   readonly labels: Readonly<Record<string, string>>;
   readonly selector: Readonly<Record<string, string>>;
   readonly containers: readonly KubernetesContainer[];
+  readonly unsupportedFields: readonly string[];
+}
+
+export interface KubernetesRawDocument {
+  readonly index: number;
+  readonly source: string;
+  readonly reason: string;
 }
 
 export interface KubernetesDocument {
   readonly source: string;
   readonly resources: readonly KubernetesResource[];
   readonly unmodeledDocuments: number;
+  readonly rawDocuments: readonly KubernetesRawDocument[];
   readonly graph: ArtifactGraph;
 }
 
 function parseContainers(spec: Record<string, unknown>): KubernetesContainer[] {
-  const template = recordValue(spec, "template");
-  const podSpec = template ? recordValue(template, "spec") : undefined;
-  const containers = podSpec?.containers;
+  const template = recordValue(spec, "template")
+    ?? (recordValue(spec, "jobTemplate") ? recordValue(recordValue(spec, "jobTemplate")!, "spec") : undefined);
+  const podTemplate = template && recordValue(template, "template");
+  const podSpec = podTemplate ? recordValue(podTemplate, "spec") : template ? recordValue(template, "spec") : undefined;
+  const containers = podSpec?.containers ?? spec.containers;
   if (!Array.isArray(containers)) return [];
   const podSecurity = podSpec ? recordValue(podSpec, "securityContext") : undefined;
   return containers.filter(isRecord).map((container, index) => {
@@ -67,6 +78,7 @@ function parseResource(value: unknown, index: number): KubernetesResource | unde
     labels: Object.keys(workloadLabels).length > 0 ? workloadLabels : metadata ? stringMap(metadata.labels) : {},
     selector,
     containers: parseContainers(spec),
+    unsupportedFields: Object.keys(value).filter((key) => !["apiVersion", "kind", "metadata", "spec", "stringData", "data", "type"].includes(key)).sort(),
   };
 }
 
@@ -81,6 +93,12 @@ export function parseKubernetes(source: string): Result<KubernetesDocument, Pars
   try {
     const documents = loadAll(source);
     const parsedDocuments = documents.map(parseResource);
+    const rawSources = source.split(/^---\s*$/m).map((document) => document.trim()).filter(Boolean);
+    const rawDocuments = parsedDocuments.flatMap((resource, index) => resource ? [] : [{
+      index,
+      source: rawSources[index] ?? "",
+      reason: "Document does not contain a supported kind and metadata.name pair.",
+    }]);
     const resources = parsedDocuments.filter((resource): resource is KubernetesResource => resource !== undefined);
     const unmodeledDocuments = parsedDocuments.filter((resource) => resource === undefined).length;
     if (resources.length === 0) return { ok: false, error: { code: "INVALID_SHAPE", message: "No Kubernetes resources with kind and metadata.name were found." } };
@@ -93,11 +111,44 @@ export function parseKubernetes(source: string): Result<KubernetesDocument, Pars
       source,
       resources,
       unmodeledDocuments,
+      rawDocuments,
       graph: { nodes: resources.map((resource) => ({ id: resource.id, label: resource.name, kind: resource.kind, detail: resource.namespace })), edges },
     } };
   } catch (error: unknown) {
     return { ok: false, error: { code: "INVALID_SYNTAX", message: error instanceof Error ? error.message : "Invalid Kubernetes YAML." } };
   }
+}
+
+/** Preserve imported manifests (including CRDs and extension fields) by default. */
+export function serializeKubernetes(document: KubernetesDocument, options: { canonical?: boolean } = {}): string {
+  if (!options.canonical) return document.source;
+  const parsed = loadAll(document.source);
+  return parsed.map((value) => dump(value, { noRefs: true, lineWidth: -1, sortKeys: false }).trimEnd()).join("\n---\n") + "\n";
+}
+
+/** Deterministic previews for the safe, local Kubernetes policy remediations. */
+export function previewKubernetesFix(source: string, ruleId: string, resourceId?: string, containerName?: string): FixPreview {
+  const parsed = parseKubernetes(source);
+  if (!parsed.ok) return { status: "unavailable", summary: "Kubernetes source must parse before a fix can be previewed." };
+  const resource = parsed.value.resources.find((candidate) => candidate.id === resourceId) ?? parsed.value.resources.find((candidate) => candidate.containers.length > 0);
+  const container = resource?.containers.find((candidate) => candidate.name === containerName) ?? resource?.containers[0];
+  if (!resource || !container) return { status: "unavailable", summary: "No modeled workload container is available for this fix." };
+  const escapedResource = resource.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapedContainer = container.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let after = source;
+  if (ruleId === "K8S_IMAGE_MUTABLE" && container.image) {
+    const stableImage = container.image.replace(/:latest$/, ":stable").replace(/^(.*?)(?::[^:@/]+)?$/, "$1:stable");
+    after = source.replace(container.image, stableImage);
+  } else if (ruleId === "K8S_ROOT_DEFAULT") {
+    const resourcePattern = new RegExp(`(kind:\\s*${escapedResource.includes("/") ? escapedResource.split("/")[0] : "(?:Deployment|StatefulSet|DaemonSet|Job|CronJob)"}[\\s\\S]*?spec:\\s*)`);
+    after = resourcePattern.test(source) ? source.replace(resourcePattern, "$1\n  securityContext:\n    runAsNonRoot: true\n") : `${source.trimEnd()}\n`;
+  } else if (ruleId === "K8S_MISSING_RESOURCES") {
+    const containerPattern = new RegExp(`(name:\\s*${escapedContainer}[\\s\\S]*?image:\\s*[^\\n]+)`);
+    after = source.replace(containerPattern, "$1\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 512Mi");
+  } else {
+    return { status: "unavailable", summary: `No automated Kubernetes preview is available for ${ruleId}.` };
+  }
+  return { status: after === source ? "unavailable" : "available", summary: `Preview ${ruleId} remediation for ${resource.id}.`, before: source, after };
 }
 
 export function analyzeKubernetes(document: KubernetesDocument): Finding[] {

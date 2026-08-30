@@ -5,7 +5,7 @@ import type { ChangeEvent } from "react";
 import { analyzeWorkspaceSource, restoreTerraformReview, type WorkspaceAnalysis } from "@/lib/domains/workspace-adapters";
 import { workspaceBlank, workspacePreset } from "@/lib/domains/workspace-presets";
 import { applyDomainTool, type ReviewLens } from "@/lib/domains/domain-tools";
-import type { WorkbenchDomain } from "@/lib/workbench/contracts";
+import type { DecisionMetadata, WorkbenchDomain } from "@/lib/workbench/contracts"; // TOKEN_POLICY_BATCHED_EXECUTION
 import { createSourceCommand, type SourceCommand, type SourceCommandReason } from "@/lib/workbench/commands";
 import { stableDigest } from "@/lib/workbench/digest";
 import { DOMAIN_ARTIFACT_LIMITS } from "@/lib/workbench/limits";
@@ -66,6 +66,10 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
     if (stored.mode === "source") {
       const restored = analyzeWorkspaceSource(domain, stored.source);
       if (!restored.ok) {
+        setSource(stored.source);
+        setAnalysis(undefined);
+        setPositions({});
+        setLocked(domain === "terraform");
         setMessage(`Stored artifact retained but could not be restored: ${restored.error.message}`);
         return;
       }
@@ -77,6 +81,10 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
     }
     const restored = restoreTerraformReview(stored.summary, stored.digest);
     if (!restored.ok) {
+      setSource(stored.summary);
+      setAnalysis(undefined);
+      setPositions({});
+      setLocked(true);
       setMessage(`Stored review retained but could not be restored: ${restored.error.message}`);
       return;
     }
@@ -113,6 +121,31 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
     const saved = saveWorkbenchState({ schemaVersion: 1, artifacts: [...artifacts, artifact] });
     if (saved.ok) setPersistenceRevision((revision) => revision + 1);
     setMessage(saved.ok ? "Saved locally" : saved.error);
+  }
+
+  function updateTerraformDecision(status: DecisionMetadata["status"]) {
+    if (domain !== "terraform" || !analysis) return;
+    try {
+      const report = JSON.parse(analysis.exportValue) as {
+        readonly sourceDigest?: unknown;
+        readonly summaryMetadata?: { readonly decisionKey?: unknown };
+        readonly [key: string]: unknown;
+      };
+      if (typeof report.sourceDigest !== "string" || typeof report.summaryMetadata?.decisionKey !== "string") return;
+      const decisions = status === "undecided" ? [] : [{
+        status,
+        artifactDigest: report.sourceDigest,
+        decisionKey: report.summaryMetadata.decisionKey,
+      } satisfies DecisionMetadata];
+      const nextAnalysis: WorkspaceAnalysis = {
+        ...analysis,
+        decisions,
+        exportValue: JSON.stringify({ ...report, decisions }, null, 2),
+      };
+      commitAnalysis(nextAnalysis.exportValue, nextAnalysis);
+    } catch {
+      setMessage("Unable to update the Terraform review decision.");
+    }
   }
 
   function syncDraft(nextSource: string) {
@@ -230,7 +263,7 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
   }
 
   const tools = <DomainToolTray domain={domain} activeLens={lens} onAddTool={addTool} onSelectLens={setLens} />;
-  const inspector = <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} refreshKey={`${domain}:${analysis ? stableDigest(source) : "empty"}:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} />;
+  const inspector = <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} refreshKey={`${domain}:${analysis ? stableDigest(source) : "empty"}:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} onDecisionChange={updateTerraformDecision} />;
 
   return (
     <section className="domain-workspace" data-domain={domain} aria-labelledby="workspace-title">
@@ -249,7 +282,8 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
           <WorkspaceHeaderButton onClick={() => fileRef.current?.click()} disabled={importPhase !== undefined}>Import</WorkspaceHeaderButton>
           {importPhase ? <WorkspaceHeaderButton onClick={() => stopImport("Import cancelled; previous workspace remains open.")}>Cancel</WorkspaceHeaderButton> : null}
           <WorkspaceHeaderButton onClick={downloadReview} disabled={!analysis || criticalSecrets}>Export</WorkspaceHeaderButton>
-          <WorkspaceHeaderButton variant="primary" onClick={analyze} disabled={importPhase !== undefined}>{domain === "terraform" ? "Review plan" : "Analyze & save"}</WorkspaceHeaderButton>
+          {/* TOKEN_POLICY_BATCHED_EXECUTION: reviewed Terraform reports are immutable after analysis. */}
+          <WorkspaceHeaderButton variant="primary" onClick={analyze} disabled={importPhase !== undefined || (domain === "terraform" && locked)}>{domain === "terraform" ? "Review plan" : "Analyze & save"}</WorkspaceHeaderButton>
         </>}
       />
       <nav className="mobile-workspace-tools" aria-label="Mobile workspace navigation">
@@ -264,7 +298,7 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
       >
         {mobilePanel ? <aside className="mobile-workspace-drawer" aria-label={mobilePanel === "tools" ? "Workspace tools" : "Source and findings"}>
           <div className="mobile-workspace-drawer__header"><span>{mobilePanel === "tools" ? "Tools" : "Source & findings"}</span><button type="button" onClick={() => setMobilePanel(undefined)}>Close</button></div>
-          <div className="mobile-workspace-drawer__content">{mobilePanel === "tools" ? tools : <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} idSuffix="-mobile" refreshKey={`${domain}:mobile:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} />}</div>
+          <div className="mobile-workspace-drawer__content">{/* TOKEN_POLICY_BATCHED_EXECUTION */}{mobilePanel === "tools" ? tools : <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} idSuffix="-mobile" refreshKey={`${domain}:mobile:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} onDecisionChange={updateTerraformDecision} />}</div>
         </aside> : null}
       </WorkbenchShell>
     </section>

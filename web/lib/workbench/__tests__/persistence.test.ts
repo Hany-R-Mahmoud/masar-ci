@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { createSampleWorkflow } from "@/lib/sample";
 import { createWorkspace } from "@/lib/workspace";
+import { stableDigest } from "@/lib/workbench/digest";
 import { LEGACY_ACTIONS_STORAGE_KEY, LEGACY_MIGRATION_MARKER, latestArtifactForDomain, loadWorkbenchState, migrateLegacyActionsStorage, saveWorkbenchState, WORKBENCH_RECOVERY_KEY, WORKBENCH_STORAGE_KEY } from "../persistence";
 
 describe("versioned workbench persistence", () => {
@@ -16,7 +17,7 @@ describe("versioned workbench persistence", () => {
           mode: "source" as const,
           name: "compose.yaml",
           source: "services: {}",
-          digest: "digest-1",
+          digest: stableDigest("services: {}"),
           updatedAt: "2026-08-25T00:00:00.000Z",
         },
       ],

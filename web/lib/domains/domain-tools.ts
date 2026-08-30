@@ -1,3 +1,4 @@
+// TOKEN_POLICY_BATCHED_EXECUTION: domain catalog and scaffold updates are intentionally batched.
 import type { Result, WorkbenchDomain } from "@/lib/workbench/contracts";
 
 export type ReviewLens = "all" | "risk" | "replace" | "dependencies" | "create" | "update" | "delete" | "isolated";
@@ -41,6 +42,10 @@ const tools: Readonly<Record<WorkbenchDomain, readonly DomainTool[]>> = {
     { mode: "author", id: "compose-volume", group: "Resources", label: "Volume", detail: "Add named volume" },
     { mode: "author", id: "compose-config", group: "Resources", label: "Config", detail: "Add external configuration" },
     { mode: "author", id: "compose-secret", group: "Resources", label: "Secret", detail: "Add secret-file reference" },
+    { mode: "author", id: "compose-command", group: "Runtime", label: "Command", detail: "Set a service command" },
+    { mode: "author", id: "compose-readonly", group: "Security", label: "Read-only root", detail: "Harden the service filesystem" },
+    { mode: "author", id: "compose-restart", group: "Reliability", label: "Restart policy", detail: "Declare service restart behavior" },
+    { mode: "author", id: "compose-logging", group: "Reliability", label: "Logging", detail: "Bound service log retention" },
   ],
   dockerfile: [
     { mode: "author", id: "dockerfile-stage", group: "Stages", label: "Build stage", detail: "Add multi-stage boundary" },
@@ -55,6 +60,10 @@ const tools: Readonly<Record<WorkbenchDomain, readonly DomainTool[]>> = {
     { mode: "author", id: "dockerfile-entrypoint", group: "Runtime", label: "ENTRYPOINT", detail: "Set executable entrypoint" },
     { mode: "author", id: "dockerfile-healthcheck", group: "Security", label: "HEALTHCHECK", detail: "Add runtime health probe" },
     { mode: "author", id: "dockerfile-user", group: "Security", label: "Non-root user", detail: "Set runtime identity" },
+    { mode: "author", id: "dockerfile-shell", group: "Configuration", label: "SHELL", detail: "Declare shell execution form" },
+    { mode: "author", id: "dockerfile-stop-signal", group: "Runtime", label: "STOPSIGNAL", detail: "Set graceful stop signal" },
+    { mode: "author", id: "dockerfile-volume", group: "Runtime", label: "VOLUME", detail: "Declare persistent mount point" },
+    { mode: "author", id: "dockerfile-add", group: "Instructions", label: "ADD", detail: "Add a local or remote source" },
   ],
   kubernetes: [
     { mode: "author", id: "kubernetes-deployment", group: "Workloads", label: "Deployment", detail: "Add scalable workload" },
@@ -71,6 +80,10 @@ const tools: Readonly<Record<WorkbenchDomain, readonly DomainTool[]>> = {
     { mode: "author", id: "kubernetes-namespace", group: "Platform", label: "Namespace", detail: "Add isolation boundary" },
     { mode: "author", id: "kubernetes-serviceaccount", group: "Platform", label: "ServiceAccount", detail: "Add workload identity" },
     { mode: "author", id: "kubernetes-hpa", group: "Platform", label: "HorizontalPodAutoscaler", detail: "Scale a deployment" },
+    { mode: "author", id: "kubernetes-pod", group: "Workloads", label: "Pod", detail: "Add a minimal workload" },
+    { mode: "author", id: "kubernetes-pdb", group: "Workloads", label: "PodDisruptionBudget", detail: "Protect workload availability" },
+    { mode: "author", id: "kubernetes-role", group: "Platform", label: "Role", detail: "Grant namespace permissions" },
+    { mode: "author", id: "kubernetes-rolebinding", group: "Platform", label: "RoleBinding", detail: "Bind workload permissions" },
   ],
   terraform: [
     { mode: "review", id: "terraform-all", group: "Review lenses", label: "All changes", detail: "Show complete plan graph", lens: "all" },
@@ -174,6 +187,22 @@ function applyComposeTool(source: string, toolId: string): string | undefined {
     const name = uniqueName(source, "app-secret");
     return insertYamlEntry(source, "secrets", `  ${name}:\n    file: ./secrets/${name}.txt`);
   }
+  if (toolId === "compose-command") {
+    const name = uniqueName(source, "command-service");
+    return insertYamlEntry(source, "services", `  ${name}:\n    image: alpine:3.21\n    command: ["sh", "-c", "echo ready"]`);
+  }
+  if (toolId === "compose-readonly") {
+    const name = uniqueName(source, "hardened-service");
+    return insertYamlEntry(source, "services", `  ${name}:\n    image: nginx:1.27-alpine\n    read_only: true\n    tmpfs: ["/tmp"]`);
+  }
+  if (toolId === "compose-restart") {
+    const name = uniqueName(source, "resilient-service");
+    return insertYamlEntry(source, "services", `  ${name}:\n    image: nginx:1.27-alpine\n    restart: unless-stopped`);
+  }
+  if (toolId === "compose-logging") {
+    const name = uniqueName(source, "logged-service");
+    return insertYamlEntry(source, "services", `  ${name}:\n    image: nginx:1.27-alpine\n    logging:\n      driver: json-file\n      options:\n        max-size: 10m\n        max-file: "3"`);
+  }
   return undefined;
 }
 
@@ -190,6 +219,10 @@ function applyDockerfileTool(source: string, toolId: string): string | undefined
   if (toolId === "dockerfile-entrypoint") return `${source.trimEnd()}\nENTRYPOINT ["node"]\n`;
   if (toolId === "dockerfile-healthcheck") return `${source.trimEnd()}\nHEALTHCHECK --interval=30s --timeout=5s CMD wget -qO- http://localhost:3000/ || exit 1\n`;
   if (toolId === "dockerfile-user") return `${source.trimEnd()}\nUSER node\n`;
+  if (toolId === "dockerfile-shell") return `${source.trimEnd()}\nSHELL ["/bin/sh", "-c"]\n`;
+  if (toolId === "dockerfile-stop-signal") return `${source.trimEnd()}\nSTOPSIGNAL SIGTERM\n`;
+  if (toolId === "dockerfile-volume") return `${source.trimEnd()}\nVOLUME ["/var/lib/app"]\n`;
+  if (toolId === "dockerfile-add") return `${source.trimEnd()}\nADD package.json /app/package.json\n`;
   return undefined;
 }
 
@@ -257,6 +290,23 @@ function applyKubernetesTool(source: string, toolId: string): string | undefined
     if (kubernetesResourceName(source, "Deployment")) return appendDocument(source, hpa);
     const deployment = `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: ${deploymentName}\nspec:\n  replicas: 1\n  selector:\n    matchLabels: { app: ${deploymentName} }\n  template:\n    metadata:\n      labels: { app: ${deploymentName} }\n    spec:\n      containers:\n        - name: ${deploymentName}\n          image: nginx:1.27-alpine`;
     return appendDocument(appendDocument(source, deployment), hpa);
+  }
+  if (toolId === "kubernetes-pod") {
+    const name = uniqueName(source, "app-pod");
+    return appendDocument(source, `apiVersion: v1\nkind: Pod\nmetadata:\n  name: ${name}\n  labels:\n    app: ${name}\nspec:\n  restartPolicy: Never\n  securityContext: { runAsNonRoot: true }\n  containers:\n    - name: ${name}\n      image: busybox:1.37\n      command: ["sh", "-c", "echo ready"]\n      resources:\n        requests: { cpu: 50m, memory: 64Mi }\n        limits: { cpu: 100m, memory: 128Mi }`);
+  }
+  if (toolId === "kubernetes-pdb") {
+    const name = uniqueName(source, "workload");
+    const target = kubernetesResourceName(source, "Deployment") ?? name;
+    return appendDocument(source, `apiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata:\n  name: ${name}-pdb\nspec:\n  maxUnavailable: 1\n  selector:\n    matchLabels: { app: ${target} }`);
+  }
+  if (toolId === "kubernetes-role") {
+    const name = uniqueName(source, "workload");
+    return appendDocument(source, `apiVersion: rbac.authorization.k8s.io/v1\nkind: Role\nmetadata:\n  name: ${name}\nrules:\n  - apiGroups: [""]\n    resources: ["configmaps"]\n    verbs: ["get", "list"]`);
+  }
+  if (toolId === "kubernetes-rolebinding") {
+    const name = uniqueName(source, "workload");
+    return appendDocument(source, `apiVersion: rbac.authorization.k8s.io/v1\nkind: RoleBinding\nmetadata:\n  name: ${name}-binding\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: Role\n  name: ${name}\nsubjects:\n  - kind: ServiceAccount\n    name: ${name}`);
   }
   return undefined;
 }

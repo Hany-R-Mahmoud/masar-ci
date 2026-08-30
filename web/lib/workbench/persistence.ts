@@ -38,6 +38,7 @@ function isSourceArtifact(value: unknown): value is SourceArtifact {
     && typeof fields.name === "string"
     && typeof fields.source === "string"
     && typeof fields.digest === "string"
+    && fields.digest === stableDigest(fields.source)
     && typeof fields.updatedAt === "string";
 }
 
@@ -50,6 +51,7 @@ function isReviewArtifact(value: unknown): value is ReviewArtifact {
     && typeof fields.name === "string"
     && typeof fields.digest === "string"
     && typeof fields.summary === "string"
+    && fields.digest === stableDigest(fields.summary)
     && typeof fields.updatedAt === "string";
 }
 
@@ -62,9 +64,19 @@ function isWorkbenchState(value: unknown): value is WorkbenchState {
 }
 
 function quarantineInvalidState(raw: string, storage: Storage): boolean {
+  let preserved = false;
   try {
     storage.setItem(WORKBENCH_RECOVERY_KEY, raw);
-    if (storage.getItem(WORKBENCH_RECOVERY_KEY) !== raw) return false;
+  } catch {
+    return false;
+  }
+  try {
+    preserved = storage.getItem(WORKBENCH_RECOVERY_KEY) === raw;
+  } catch {
+    return false;
+  }
+  if (!preserved) return false;
+  try {
     storage.removeItem(WORKBENCH_STORAGE_KEY);
     return true;
   } catch {
@@ -99,7 +111,11 @@ export function saveWorkbenchState(state: WorkbenchState, storage: Storage | und
   if (!isWorkbenchState(state)) return { ok: false, error: "Refused to persist invalid workbench state." };
   if (!storage) return { ok: false, error: "Unable to save locally: local storage is unavailable." };
   try {
-    storage.setItem(WORKBENCH_STORAGE_KEY, JSON.stringify(state));
+    const serialized = JSON.stringify(state);
+    storage.setItem(WORKBENCH_STORAGE_KEY, serialized);
+    if (storage.getItem(WORKBENCH_STORAGE_KEY) !== serialized) {
+      return { ok: false, error: "Unable to save locally: storage write verification failed." };
+    }
     return { ok: true };
   } catch (error: unknown) {
     const detail = error instanceof Error ? error.message : "Unknown storage error";

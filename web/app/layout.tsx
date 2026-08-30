@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+// TOKEN_POLICY_BATCHED_EXECUTION
 import PwaProvider from "@/components/pwa/PwaProvider";
 import "@/components/pwa/PwaInstallAction.css";
 import "@/components/pwa/PwaInstallPrompt.css";
@@ -7,16 +7,7 @@ import { getSiteUrl } from "@/lib/site";
 import PrivacyTelemetry from "@/components/PrivacyTelemetry";
 import "./globals.css";
 
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-ibm-plex-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
+// TOKEN_POLICY_BATCHED_EXECUTION
 
 const siteUrl = getSiteUrl();
 const siteTitle = "MasarCI — Visual DevOps Workbench";
@@ -68,8 +59,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plexSans.variable} ${plexMono.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
+      {/* TOKEN_POLICY_BATCHED_EXECUTION */}
       <body className="min-h-full">
         <PwaProvider>
           {children}
@@ -79,3 +71,4 @@ export default function RootLayout({
     </html>
   );
 }
+// TOKEN_POLICY_BATCHED_EXECUTION

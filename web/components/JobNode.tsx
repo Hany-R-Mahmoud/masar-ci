@@ -57,9 +57,8 @@ function JobNodeBase({ data }: { data: JobNodeData }) {
           return (
             <div
               key={s.id}
-              onClick={() => onStepClick(job.id, s.id)}
               className={cn(
-                "relative flex items-center gap-2 rounded-md border bg-surface px-3 py-2 cursor-pointer hover:border-border-strong",
+                "relative flex items-center rounded-md border bg-surface hover:border-border-strong focus-within:border-border-strong",
                 f ? "border-critical shadow-[0_0_0_2px_oklch(0.62_0.22_25/0.14)]" : "border-border",
               )}
             >
@@ -75,27 +74,35 @@ function JobNodeBase({ data }: { data: JobNodeData }) {
                   {f.severity === "critical" ? "!" : f.severity === "warning" ? "~" : "i"}
                 </span>
               )}
-              <span className="grid h-[18px] w-[18px] place-items-center rounded bg-code-bg border border-border font-mono text-[9.5px] text-ink-muted">
-                {s.kind === "action" ? "✓" : "$_"}
-              </span>
-              <span className="font-mono text-[11.5px] text-ink flex-1 min-w-0 truncate">
-                {s.kind === "action" ? (
-                  <>
-                    <b className="text-[oklch(0.74_0.10_250)]">uses:</b> {s.action!.repo}
-                    <span className="text-accent">@{s.action!.ref}</span>
-                  </>
-                ) : (
-                  <>
-                    <b className="text-[oklch(0.74_0.10_250)]">run:</b> {s.run}
-                  </>
-                )}
-              </span>
               <button
+                type="button"
+                onClick={() => onStepClick(job.id, s.id)}
+                aria-label={`Edit step ${s.name}`}
+                className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left"
+              >
+                <span className="grid h-[18px] w-[18px] shrink-0 place-items-center rounded border border-border bg-code-bg font-mono text-[9.5px] text-ink-muted">
+                  {s.kind === "action" ? "✓" : "$_"}
+                </span>
+                <span className="min-w-0 flex-1 truncate font-mono text-[11.5px] text-ink">
+                  {s.kind === "action" ? (
+                    <>
+                      <b className="text-[oklch(0.74_0.10_250)]">uses:</b> {s.action!.repo}
+                      <span className="text-accent">@{s.action!.ref}</span>
+                    </>
+                  ) : (
+                    <>
+                      <b className="text-[oklch(0.74_0.10_250)]">run:</b> {s.run}
+                    </>
+                  )}
+                </span>
+              </button>
+              <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onDeleteStep(job.id, s.id);
                 }}
-                className="text-ink-faint hover:text-critical text-xs px-1"
+                className="mr-2 shrink-0 px-1 text-xs text-ink-faint hover:text-critical"
                 aria-label="delete step"
               >
                 ✕

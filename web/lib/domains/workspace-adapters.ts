@@ -1,6 +1,6 @@
 import { parseYaml } from "@/lib/generate/parse";
 import { lint } from "@/lib/lint/lint";
-import type { ArtifactGraph, Finding, ParseError, Result, WorkbenchDomain } from "@/lib/workbench/contracts";
+import type { ArtifactGraph, DecisionMetadata, Finding, ParseError, Result, WorkbenchDomain } from "@/lib/workbench/contracts";
 import { createFinding, sortFindings } from "@/lib/workbench/findings";
 import { checkArtifactSafety } from "@/lib/workbench/limits";
 import { isRecord } from "@/lib/workbench/records"; // TOKEN_POLICY_BATCHED_EXECUTION
@@ -26,6 +26,7 @@ export interface WorkspaceAnalysis {
   readonly mode: "source" | "review";
   readonly graph: ArtifactGraph;
   readonly findings: readonly Finding[];
+  readonly decisions?: readonly DecisionMetadata[];
   readonly summary: readonly { readonly label: string; readonly value: string }[];
   readonly exportValue: string;
 }
@@ -46,7 +47,7 @@ function parseActions(source: string): Result<WorkspaceAnalysis, ParseError> {
     }));
     return { ok: true, value: {
       domain: "actions", mode: "source", graph, findings: sortFindings([...findings, ...scanSecrets(source, "workflow")]),
-      summary: [{ label: "Jobs", value: String(workflow.jobs.length) }, { label: "Triggers", value: String(workflow.on.length) }], exportValue: source,
+      decisions: [], summary: [{ label: "Jobs", value: String(workflow.jobs.length) }, { label: "Triggers", value: String(workflow.on.length) }], exportValue: source,
     } };
   } catch (error: unknown) {
     return { ok: false, error: { code: "INVALID_SYNTAX", message: error instanceof Error ? error.message : "Invalid workflow YAML." } };
@@ -62,21 +63,21 @@ export function analyzeWorkspaceSource(domain: WorkbenchDomain, source: string):
     if (!parsed.ok) return parsed;
     return { ok: true, value: { domain, mode: "source", graph: parsed.value.graph,
       findings: sortFindings([...analyzeCompose(parsed.value), ...scanSecrets(source, "compose.yaml")]),
-      summary: [{ label: "Services", value: String(parsed.value.services.length) }, { label: "Links", value: String(parsed.value.graph.edges.length) }], exportValue: source } };
+      decisions: [], summary: [{ label: "Services", value: String(parsed.value.services.length) }, { label: "Links", value: String(parsed.value.graph.edges.length) }], exportValue: source } };
   }
   if (domain === "dockerfile") {
     const parsed = parseDockerfile(source);
     if (!parsed.ok) return parsed;
     return { ok: true, value: { domain, mode: "source", graph: parsed.value.graph,
       findings: sortFindings([...analyzeDockerfile(parsed.value), ...scanSecrets(source, "Dockerfile")]),
-      summary: [{ label: "Stages", value: String(parsed.value.stages.length) }, { label: "Transfers", value: String(parsed.value.graph.edges.length) }], exportValue: source } };
+      decisions: [], summary: [{ label: "Stages", value: String(parsed.value.stages.length) }, { label: "Transfers", value: String(parsed.value.graph.edges.length) }], exportValue: source } };
   }
   if (domain === "kubernetes") {
     const parsed = parseKubernetes(source);
     if (!parsed.ok) return parsed;
     return { ok: true, value: { domain, mode: "source", graph: parsed.value.graph,
       findings: sortFindings([...analyzeKubernetes(parsed.value), ...scanSecrets(source, "manifests.yaml")]),
-      summary: [{ label: "Resources", value: String(parsed.value.resources.length) }, { label: "Links", value: String(parsed.value.graph.edges.length) }, { label: "Raw retained", value: String(parsed.value.unmodeledDocuments) }], exportValue: source } }; // TOKEN_POLICY_BATCHED_EXECUTION
+      decisions: [], summary: [{ label: "Resources", value: String(parsed.value.resources.length) }, { label: "Links", value: String(parsed.value.graph.edges.length) }, { label: "Raw retained", value: String(parsed.value.unmodeledDocuments) }], exportValue: source } }; // TOKEN_POLICY_BATCHED_EXECUTION
   }
   const parsed = parseTerraformPlan(source);
   if (!parsed.ok) return parsed;
@@ -88,9 +89,45 @@ export function analyzeWorkspaceSource(domain: WorkbenchDomain, source: string):
     changes: parsed.value.changes,
     graph: parsed.value.graph,
     summaryMetadata: parsed.value.summaryMetadata,
+    decisions: [],
   }, null, 2);
-  return { ok: true, value: { domain, mode: "review", graph: parsed.value.graph, findings: analyzeTerraformPlan(parsed.value),
+  return { ok: true, value: { domain, mode: "review", graph: parsed.value.graph, findings: analyzeTerraformPlan(parsed.value), decisions: [],
     summary: Object.entries(parsed.value.summary).map(([label, value]) => ({ label, value: String(value) })), exportValue } };
+}
+
+function readPersistedGraph(value: unknown): ArtifactGraph | undefined {
+  if (value === undefined) return undefined;
+  if (!isRecord(value) || !Array.isArray(value.nodes) || !Array.isArray(value.edges)) throw new Error("Review graph is invalid.");
+  const nodes = value.nodes.map((node, index) => {
+    if (!isRecord(node) || typeof node.id !== "string" || typeof node.label !== "string" || typeof node.kind !== "string") throw new Error(`Review graph node ${index + 1} is invalid.`);
+    if (node.detail !== undefined && typeof node.detail !== "string") throw new Error(`Review graph node ${index + 1} has invalid detail.`);
+    return { id: node.id, label: node.label, kind: node.kind, ...(node.detail === undefined ? {} : { detail: node.detail }) };
+  });
+  const edges = value.edges.map((edge, index) => {
+    if (!isRecord(edge) || typeof edge.from !== "string" || typeof edge.to !== "string" || typeof edge.label !== "string") throw new Error(`Review graph edge ${index + 1} is invalid.`);
+    return { from: edge.from, to: edge.to, label: edge.label };
+  });
+  return { nodes, edges };
+}
+
+function readPersistedDecisions(value: unknown, sourceDigest: string, decisionKey: string): readonly DecisionMetadata[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new Error("Review decisions are invalid.");
+  return value.map((item, index) => {
+    if (!isRecord(item)
+      || !["undecided", "approved", "rejected", "dismissed"].includes(String(item.status))
+      || item.artifactDigest !== sourceDigest
+      || item.decisionKey !== decisionKey
+      || (item.reason !== undefined && typeof item.reason !== "string")
+      || (item.stale !== undefined && typeof item.stale !== "boolean")) throw new Error(`Review decision ${index + 1} is invalid or bound to another artifact.`);
+    return {
+      status: item.status as DecisionMetadata["status"],
+      artifactDigest: sourceDigest,
+      decisionKey,
+      ...(item.reason === undefined ? {} : { reason: item.reason }),
+      ...(item.stale === undefined ? {} : { stale: item.stale }),
+    };
+  });
 }
 
 export function restoreTerraformReview(summary: string, expectedDigest?: string): Result<WorkspaceAnalysis, ParseError> {
@@ -127,6 +164,7 @@ export function restoreTerraformReview(summary: string, expectedDigest?: string)
         references,
       };
     });
+    const persistedGraph = readPersistedGraph(record.graph);
     const metadataRecord = record.summaryMetadata;
     const fallbackLimitations = [typeof record.limitation === "string" ? record.limitation : "Static plan review only; no execution, provider refresh, or authoritative cost estimate."];
     const readStringList = (key: "assumptions" | "limitations", fallback: readonly string[]): readonly string[] => {
@@ -159,13 +197,20 @@ export function restoreTerraformReview(summary: string, expectedDigest?: string)
         ? metadataRecord.decisionKey
         : expectedDecisionKey,
     };
+    const decisionKey = summaryMetadata.decisionKey;
+    const decisions = readPersistedDecisions(record.decisions, record.sourceDigest, decisionKey);
+    const generatedGraph = buildTerraformGraph(changes);
+    if (persistedGraph && JSON.stringify(persistedGraph) !== JSON.stringify(generatedGraph)) {
+      throw new Error("Review graph does not match its persisted changes.");
+    }
+    const graph = persistedGraph ?? generatedGraph;
     const plan: TerraformPlanReview = {
       mode: "review",
       sourceDigest: record.sourceDigest,
       formatVersion: record.formatVersion,
       terraformVersion: typeof record.terraformVersion === "string" ? record.terraformVersion : undefined,
       changes,
-      graph: buildTerraformGraph(changes),
+      graph,
       summary: summarizeTerraformChanges(changes),
       summaryMetadata,
     };
@@ -174,8 +219,10 @@ export function restoreTerraformReview(summary: string, expectedDigest?: string)
       mode: "review",
       graph: plan.graph,
       findings: analyzeTerraformPlan(plan),
+      decisions,
       summary: Object.entries(plan.summary).map(([label, value]) => ({ label, value: String(value) })),
-      exportValue: JSON.stringify(plan, null, 2),
+      // TOKEN_POLICY_BATCHED_EXECUTION: preserve persisted decisions on re-export.
+      exportValue: JSON.stringify({ ...plan, decisions }, null, 2),
     } };
   } catch (error: unknown) {
     return { ok: false, error: { code: "INVALID_SHAPE", message: error instanceof Error ? error.message : "Invalid persisted Terraform review." } };

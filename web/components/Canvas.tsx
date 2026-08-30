@@ -8,6 +8,7 @@ import {
   type Connection,
   type ReactFlowInstance,
   type NodeTypes,
+  type PanOnScrollMode,
   MarkerType,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -172,6 +173,9 @@ export function Canvas({
         }}
         fitView
         fitViewOptions={{ padding: 0.2 }}
+        panOnScroll
+        panOnScrollMode={"free" as PanOnScrollMode}
+        zoomOnScroll={false}
         proOptions={{ hideAttribution: false }}
         nodesDraggable
         nodesConnectable
