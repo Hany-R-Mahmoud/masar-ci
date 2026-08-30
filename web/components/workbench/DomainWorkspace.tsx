@@ -5,7 +5,7 @@ import type { ChangeEvent } from "react";
 import { analyzeWorkspaceSource, restoreTerraformReview, type WorkspaceAnalysis } from "@/lib/domains/workspace-adapters";
 import { workspaceBlank, workspacePreset } from "@/lib/domains/workspace-presets";
 import { applyDomainTool, type ReviewLens } from "@/lib/domains/domain-tools";
-import type { DecisionMetadata, WorkbenchDomain } from "@/lib/workbench/contracts"; // TOKEN_POLICY_BATCHED_EXECUTION
+import type { DecisionMetadata, Finding, WorkbenchDomain } from "@/lib/workbench/contracts"; // TOKEN_POLICY_BATCHED_EXECUTION
 import { createSourceCommand, type SourceCommand, type SourceCommandReason } from "@/lib/workbench/commands";
 import { stableDigest } from "@/lib/workbench/digest";
 import { DOMAIN_ARTIFACT_LIMITS } from "@/lib/workbench/limits";
@@ -29,6 +29,18 @@ function initialAnalysis(domain: WorkbenchDomain): WorkspaceAnalysis | undefined
   return result.ok ? result.value : undefined;
 }
 
+function formatFindingStatus(findings: readonly Finding[]): string {
+  const counts = findings.reduce<Record<string, number>>((result, finding) => {
+    const severity = finding.severity === "high" ? "critical" : finding.severity;
+    result[severity] = (result[severity] ?? 0) + 1;
+    return result;
+  }, {});
+  const parts = ["critical", "warning", "info"]
+    .filter((severity) => counts[severity])
+    .map((severity) => `${counts[severity]} ${severity}${counts[severity] === 1 ? "" : "s"}`);
+  return `${parts.join(" · ")} · ${findings.length} total`;
+}
+
 export default function DomainWorkspace({ domain, title, description, artifactName }: DomainWorkspaceProps) {
   const [source, setSource] = useState(() => workspacePreset(domain));
   const [analysis, setAnalysis] = useState<WorkspaceAnalysis | undefined>(() => initialAnalysis(domain));
@@ -44,15 +56,21 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
   const workerRef = useRef<Worker | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const criticalSecrets = analysis?.findings.some((finding) => finding.ruleId === "SECRET_LITERAL" && finding.severity === "critical") ?? false;
+  const findings = analysis?.findings ?? [];
   const domainLabel = domain === "dockerfile" ? "Dockerfile" : domain === "compose" ? "Compose" : title;
   const headerDomain = domain === "compose" || domain === "dockerfile" ? "containers" : domain;
   const statusTone: WorkspaceHeaderStatusTone = importPhase
     ? "progress"
-    : criticalSecrets || /blocked|cancelled|could not|exceed|failed|invalid|retained/i.test(message)
+    : criticalSecrets || findings.length > 0 || /blocked|cancelled|could not|exceed|failed|invalid|retained/i.test(message)
       ? "warning"
       : analysis
         ? "success"
         : "neutral";
+  const headerStatus = importPhase || /blocked|cancelled|could not|exceed|failed|invalid|retained/i.test(message)
+    ? message
+    : findings.length > 0
+      ? formatFindingStatus(findings)
+      : message;
 
   useEffect(() => {
     migrateLegacyActionsStorage();
@@ -238,6 +256,28 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
     applySourceChange(result.value, "edit");
   }
 
+  function applyFindingFix(finding: Finding) {
+    const preview = finding.fixProposal;
+    if (domain === "terraform" || !finding.remediation.safeToApply || !analysis?.findings.some((candidate) => candidate.fingerprint === finding.fingerprint) || !preview || preview.status !== "available" || !preview.after || !preview.before) return;
+    if (preview.before !== source || (preview.digest && preview.digest !== stableDigest(source))) {
+      setMessage("Fix preview is stale; analyze the current source before applying it.");
+      return;
+    }
+    const validated = analyzeWorkspaceSource(domain, preview.after);
+    if (!validated.ok) {
+      setMessage(`Fix blocked: ${validated.error.message}`);
+      return;
+    }
+    const command = createSourceCommand({ domain, reason: "fix", before: source, after: preview.after });
+    const applied = command.apply();
+    if (!applied.ok) {
+      setMessage(applied.error);
+      return;
+    }
+    setUndoStack((current) => [...current.slice(-49), command]);
+    commitAnalysis(applied.value, validated.value);
+  }
+
   function undoLastChange() {
     const command = undoStack.at(-1);
     if (!command) return;
@@ -263,14 +303,14 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
   }
 
   const tools = <DomainToolTray domain={domain} activeLens={lens} onAddTool={addTool} onSelectLens={setLens} />;
-  const inspector = <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} refreshKey={`${domain}:${analysis ? stableDigest(source) : "empty"}:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} onDecisionChange={updateTerraformDecision} />;
+  const inspector = <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} refreshKey={`${domain}:${analysis ? stableDigest(source) : "empty"}:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} onApplyFix={applyFindingFix} onDecisionChange={updateTerraformDecision} />;
 
   return (
     <section className="domain-workspace" data-domain={domain} aria-labelledby="workspace-title">
       <WorkspaceHeader
         domain={headerDomain}
         artifactName={artifactName}
-        status={message}
+        status={headerStatus}
         statusTone={statusTone}
         statusTitle={analysis ? stableDigest(source) : "No valid artifact"}
         title={title}
@@ -298,7 +338,7 @@ export default function DomainWorkspace({ domain, title, description, artifactNa
       >
         {mobilePanel ? <aside className="mobile-workspace-drawer" aria-label={mobilePanel === "tools" ? "Workspace tools" : "Source and findings"}>
           <div className="mobile-workspace-drawer__header"><span>{mobilePanel === "tools" ? "Tools" : "Source & findings"}</span><button type="button" onClick={() => setMobilePanel(undefined)}>Close</button></div>
-          <div className="mobile-workspace-drawer__content">{/* TOKEN_POLICY_BATCHED_EXECUTION */}{mobilePanel === "tools" ? tools : <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} idSuffix="-mobile" refreshKey={`${domain}:mobile:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} onDecisionChange={updateTerraformDecision} />}</div>
+          <div className="mobile-workspace-drawer__content">{/* TOKEN_POLICY_BATCHED_EXECUTION */}{mobilePanel === "tools" ? tools : <DomainInspector domain={domain} domainLabel={domainLabel} source={source} analysis={analysis} locked={locked} idSuffix="-mobile" refreshKey={`${domain}:mobile:${persistenceRevision}`} onSourceChange={(nextSource) => applySourceChange(nextSource, "edit")} onApplyFix={applyFindingFix} onDecisionChange={updateTerraformDecision} />}</div>
         </aside> : null}
       </WorkbenchShell>
     </section>

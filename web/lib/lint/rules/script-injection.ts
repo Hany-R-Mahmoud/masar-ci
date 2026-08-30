@@ -3,14 +3,40 @@ import type { Workflow } from "@/lib/model/types";
 
 // github.event.* are attacker-controlled (issue/PR titles, branch names, ...).
 const EXPR = /\$\{\{\s*([^}]+?)\s*\}\}/g;
+const UNSAFE_SHELL = /\$\(|`|<<-?|\beval\b|\bsource\b|\b(?:bash|sh|zsh|dash|ksh|fish|python3?|node|perl|ruby)\s+-c\b/i;
+
+function isInsideDoubleQuotes(input: string, index: number): boolean {
+  let quoted = false;
+  let escaped = false;
+  for (let offset = 0; offset < index; offset += 1) {
+    const character = input[offset];
+    if (character === "\\" && !escaped) {
+      escaped = true;
+      continue;
+    }
+    if (character === '"' && !escaped) quoted = !quoted;
+    escaped = false;
+  }
+  return quoted;
+}
+
+export function canSafelyHoistUntrusted(run: string): boolean {
+  if (UNSAFE_SHELL.test(run)) return false;
+  const matches = [...run.matchAll(new RegExp(EXPR.source, "g"))];
+  const untrusted = matches.filter((match) => match[1]?.includes("github.event."));
+  return untrusted.length > 0 && untrusted.every((match) => (
+    typeof match.index === "number" && isInsideDoubleQuotes(run, match.index)
+  ));
+}
 
 /** Hoist untrusted github.event.* references in a run block into env vars. */
-export function hoistUntrusted(run: string): {
+export function hoistUntrusted(run: string, existingEnv: Record<string, string> = {}): {
   env: Record<string, string>;
   run: string;
 } | null {
+  if (!canSafelyHoistUntrusted(run)) return null;
   const env: Record<string, string> = {};
-  const used = new Set<string>();
+  const used = new Set(Object.keys(existingEnv));
   let found = false;
   const next = run.replace(EXPR, (full, expr: string) => {
     if (!expr.includes("github.event.")) return full; // leave trusted refs alone
@@ -48,7 +74,7 @@ export const scriptInjection: Rule = {
             const clone: Workflow = JSON.parse(JSON.stringify(workflow));
             const j = clone.jobs.find((x) => x.id === job.id)!;
             const s = j.steps.find((x) => x.id === step.id)!;
-            const hoisted = hoistUntrusted(s.run ?? "");
+            const hoisted = hoistUntrusted(s.run ?? "", s.env);
             if (hoisted) {
               s.env = { ...(s.env ?? {}), ...hoisted.env };
               s.run = hoisted.run;

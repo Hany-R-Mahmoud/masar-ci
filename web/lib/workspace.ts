@@ -5,6 +5,7 @@ export interface WorkspaceWorkflow {
   id: string;
   workflow: Workflow;
   positions: Record<string, { x: number; y: number }>;
+  source?: string;
   savedYaml: string;
 }
 
@@ -25,6 +26,7 @@ export function createWorkspace(workflow: Workflow, id = makeWorkflowId(workflow
     id,
     workflow,
     positions: {},
+    source: generateYaml(workflow),
     savedYaml: generateYaml(workflow),
   };
   return { activeId: id, openIds: [id], workflows: { [id]: tab }, recentIds: [id] };
@@ -63,6 +65,7 @@ export function isWorkspaceState(value: unknown): value is WorkspaceState {
         Number.isFinite((position as { x?: unknown }).x) &&
         Number.isFinite((position as { y?: unknown }).y),
       ) &&
+      (tab.source === undefined || typeof tab.source === "string") &&
       typeof tab.savedYaml === "string";
   });
 }

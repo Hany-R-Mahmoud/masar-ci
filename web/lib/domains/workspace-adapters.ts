@@ -1,6 +1,6 @@
 import { parseYaml } from "@/lib/generate/parse";
 import { lint } from "@/lib/lint/lint";
-import type { ArtifactGraph, DecisionMetadata, Finding, ParseError, Result, WorkbenchDomain } from "@/lib/workbench/contracts";
+import type { ArtifactGraph, DecisionMetadata, Finding, FixPreview, ParseError, Remediation, Result, WorkbenchDomain } from "@/lib/workbench/contracts";
 import { createFinding, sortFindings } from "@/lib/workbench/findings";
 import { checkArtifactSafety } from "@/lib/workbench/limits";
 import { isRecord } from "@/lib/workbench/records"; // TOKEN_POLICY_BATCHED_EXECUTION
@@ -20,6 +20,7 @@ import {
   type TerraformSummaryMetadata,
 } from "./terraform/terraform";
 import { stableDigest } from "@/lib/workbench/digest";
+import { previewFindingFix } from "@/lib/lint/preview";
 
 export interface WorkspaceAnalysis {
   readonly domain: WorkbenchDomain;
@@ -29,6 +30,36 @@ export interface WorkspaceAnalysis {
   readonly decisions?: readonly DecisionMetadata[];
   readonly summary: readonly { readonly label: string; readonly value: string }[];
   readonly exportValue: string;
+}
+
+function remediationForPreview(finding: Finding, preview: FixPreview): Remediation {
+  if (preview.status === "available" && finding.ruleId === "INJECT-001") {
+    return {
+      kind: "automated",
+      summary: "Move attacker-controlled event data into a step-level environment variable.",
+      steps: ["Review the exact diff.", "Apply the change.", "Re-analyze the workflow."],
+      safeToApply: true,
+      nextVerification: "INJECT-001 is absent after re-analysis.",
+    };
+  }
+  if (preview.status !== "requires-review") return finding.remediation;
+  return {
+    kind: "review",
+    summary: "Review the exact diff and its runtime implications before applying it.",
+    steps: ["Inspect the before/after preview.", "Confirm the proposed value or reference.", "Apply the smallest manual change and re-analyze."],
+    safeToApply: false,
+    nextVerification: "Re-analyze the source and confirm the finding changed as expected.",
+  };
+}
+
+function addFindingProposal(domain: WorkbenchDomain, source: string, finding: Finding): Finding {
+  const fixProposal = previewFindingFix(domain, source, finding);
+  if (!fixProposal || fixProposal.status === "unavailable") return finding;
+  return { ...finding, fixProposal, remediation: remediationForPreview(finding, fixProposal) };
+}
+
+function addFixProposals(domain: WorkbenchDomain, source: string, findings: readonly Finding[]): Finding[] {
+  return findings.map((finding) => addFindingProposal(domain, source, finding));
 }
 
 function parseActions(source: string): Result<WorkspaceAnalysis, ParseError> {
@@ -45,8 +76,9 @@ function parseActions(source: string): Result<WorkspaceAnalysis, ParseError> {
       message: finding.message,
       evidence: { artifact: finding.targetJobId, line: finding.location?.startLine, path: finding.targetStepId },
     }));
+    const allFindings = addFixProposals("actions", source, [...findings, ...scanSecrets(source, "workflow")]);
     return { ok: true, value: {
-      domain: "actions", mode: "source", graph, findings: sortFindings([...findings, ...scanSecrets(source, "workflow")]),
+      domain: "actions", mode: "source", graph, findings: sortFindings(allFindings),
       decisions: [], summary: [{ label: "Jobs", value: String(workflow.jobs.length) }, { label: "Triggers", value: String(workflow.on.length) }], exportValue: source,
     } };
   } catch (error: unknown) {
@@ -62,21 +94,21 @@ export function analyzeWorkspaceSource(domain: WorkbenchDomain, source: string):
     const parsed = parseCompose(source);
     if (!parsed.ok) return parsed;
     return { ok: true, value: { domain, mode: "source", graph: parsed.value.graph,
-      findings: sortFindings([...analyzeCompose(parsed.value), ...scanSecrets(source, "compose.yaml")]),
+      findings: sortFindings(addFixProposals(domain, source, [...analyzeCompose(parsed.value), ...scanSecrets(source, "compose.yaml")])),
       decisions: [], summary: [{ label: "Services", value: String(parsed.value.services.length) }, { label: "Links", value: String(parsed.value.graph.edges.length) }], exportValue: source } };
   }
   if (domain === "dockerfile") {
     const parsed = parseDockerfile(source);
     if (!parsed.ok) return parsed;
     return { ok: true, value: { domain, mode: "source", graph: parsed.value.graph,
-      findings: sortFindings([...analyzeDockerfile(parsed.value), ...scanSecrets(source, "Dockerfile")]),
+      findings: sortFindings(addFixProposals(domain, source, [...analyzeDockerfile(parsed.value), ...scanSecrets(source, "Dockerfile")])),
       decisions: [], summary: [{ label: "Stages", value: String(parsed.value.stages.length) }, { label: "Transfers", value: String(parsed.value.graph.edges.length) }], exportValue: source } };
   }
   if (domain === "kubernetes") {
     const parsed = parseKubernetes(source);
     if (!parsed.ok) return parsed;
     return { ok: true, value: { domain, mode: "source", graph: parsed.value.graph,
-      findings: sortFindings([...analyzeKubernetes(parsed.value), ...scanSecrets(source, "manifests.yaml")]),
+      findings: sortFindings(addFixProposals(domain, source, [...analyzeKubernetes(parsed.value), ...scanSecrets(source, "manifests.yaml")])),
       decisions: [], summary: [{ label: "Resources", value: String(parsed.value.resources.length) }, { label: "Links", value: String(parsed.value.graph.edges.length) }, { label: "Raw retained", value: String(parsed.value.unmodeledDocuments) }], exportValue: source } }; // TOKEN_POLICY_BATCHED_EXECUTION
   }
   const parsed = parseTerraformPlan(source);

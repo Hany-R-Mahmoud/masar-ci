@@ -50,11 +50,14 @@ export interface Remediation {
 
 export interface FixPreview {
   readonly status?: "available" | "unavailable" | "requires-review";
+  readonly risk?: "safe" | "review";
   readonly summary?: string;
   readonly before?: string;
   readonly after?: string;
   readonly digest?: string;
   readonly decisionKey?: string;
+  readonly reversible?: boolean;
+  readonly validation?: string;
 }
 
 export type FixProposal = FixPreview;

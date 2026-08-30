@@ -1,6 +1,7 @@
 "use client";
 
-import type { DecisionMetadata, WorkbenchDomain } from "@/lib/workbench/contracts"; // TOKEN_POLICY_BATCHED_EXECUTION
+import { useState } from "react";
+import type { DecisionMetadata, Finding, WorkbenchDomain } from "@/lib/workbench/contracts"; // TOKEN_POLICY_BATCHED_EXECUTION
 import type { WorkspaceAnalysis } from "@/lib/domains/workspace-adapters";
 import CrossDomainContracts from "./CrossDomainContracts";
 
@@ -13,6 +14,7 @@ interface DomainInspectorProps {
   readonly refreshKey: string;
   readonly idSuffix?: string;
   readonly onSourceChange: (source: string) => void;
+  readonly onApplyFix?: (finding: Finding) => void;
   readonly onDecisionChange?: (status: DecisionMetadata["status"]) => void;
 }
 
@@ -45,11 +47,14 @@ function decisionLabel(status: DecisionMetadata["status"] | undefined, stale: bo
   return stale ? `${status} · stale` : status;
 }
 
-export function DomainInspector({ domain, domainLabel, source, analysis, locked, refreshKey, idSuffix = "", onSourceChange, onDecisionChange }: DomainInspectorProps) {
+export function DomainInspector({ domain, domainLabel, source, analysis, locked, refreshKey, idSuffix = "", onSourceChange, onApplyFix, onDecisionChange }: DomainInspectorProps) {
+  const [previewId, setPreviewId] = useState<string>();
+  const [confirmationId, setConfirmationId] = useState<string>();
   const sourceId = `${domain}-source${idSuffix}`;
   const displayedSource = domain === "terraform" && locked && analysis ? analysis.exportValue : source;
   const critical = analysis?.findings.filter((finding) => finding.severity === "critical" || finding.severity === "high").length ?? 0;
   const warnings = analysis?.findings.filter((finding) => ["warning", "medium", "low"].includes(finding.severity)).length ?? 0;
+  const info = analysis?.findings.filter((finding) => finding.severity === "info").length ?? 0;
   const terraformReport = readTerraformReport(analysis);
   const decision = analysis?.decisions?.[0];
   const staleDecision = Boolean(decision && (decision.stale || decision.artifactDigest !== terraformReport?.sourceDigest || decision.decisionKey !== terraformReport?.decisionKey));
@@ -63,7 +68,7 @@ export function DomainInspector({ domain, domainLabel, source, analysis, locked,
         <p>{locked ? "Immutable redacted review. Import another plan to replace it." : "Source and canvas stay synchronized when syntax is valid."}</p>
       </section>
       <section className="domain-findings" aria-label="Findings and evidence">
-        <div className="findings-summary"><div><strong>{critical}</strong><span>Critical</span></div><div><strong>{warnings}</strong><span>Warning</span></div></div>
+        <div className="findings-summary"><div><strong>{critical}</strong><span>Critical</span></div><div><strong>{warnings}</strong><span>Warning</span></div><div><strong>{info}</strong><span>Info</span></div><div><strong>{analysis?.findings.length ?? 0}</strong><span>Total</span></div></div>
         {terraformReport ? <section className="terraform-review-card" aria-label="Terraform review summary">
           <div className="terraform-review-card__header"><div><div className="panel-label">Plan summary</div><small>{terraformReport.changes.length} resource change{terraformReport.changes.length === 1 ? "" : "s"}</small></div><span className={staleDecision ? "decision-status decision-status--stale" : "decision-status"}>{decisionLabel(decision?.status, staleDecision)}</span></div>
           <div className="terraform-metrics">{summaryEntries.map(([key, value]) => <div key={key}><strong>{value}</strong><span>{key.replaceAll("_", " ")}</span></div>)}</div>
@@ -79,14 +84,31 @@ export function DomainInspector({ domain, domainLabel, source, analysis, locked,
         </section> : null}
         <div className="panel-label">Findings & evidence</div>
         {!analysis ? <p className="empty-state">Correct or import source to begin review.</p> : analysis.findings.length === 0 ? <p className="empty-state">No findings in locked rule set.</p> : (
-          <ol className="finding-list">{analysis.findings.map((finding) => (
-            <li key={finding.fingerprint} data-severity={finding.severity}>
+          <ol className="finding-list">{analysis.findings.map((finding) => {
+            const proposal = finding.fixProposal;
+            return <li key={finding.fingerprint} data-severity={finding.severity}>
               <div><span>{finding.severity}</span><code>{finding.ruleId}</code></div>
               <strong>{finding.title}</strong><p>{finding.message}</p>
-              <small>{finding.category} · {finding.confidence} confidence</small>
+              <small>{finding.category} · {finding.confidence} confidence{finding.evidence?.artifact ? ` · ${finding.evidence.artifact}` : ""}{finding.evidence?.line ? ` · line ${finding.evidence.line}` : ""}{finding.evidence?.path ? ` · ${finding.evidence.path}` : ""}</small>
               <p>{finding.remediation.summary}</p>
-            </li>
-          ))}</ol>
+              {finding.limitations.length ? <p><strong>Limitations:</strong> {finding.limitations.join(" ")}</p> : null}
+              {proposal ? <div className="finding-actions">
+                <button type="button" onClick={() => setPreviewId(previewId === finding.id ? undefined : finding.id)} disabled={!proposal.before || !proposal.after} aria-expanded={previewId === finding.id} aria-controls={`${finding.id}-diff`}>
+                  {previewId === finding.id ? "Hide diff" : "Preview diff"}
+                </button>
+                {proposal.status === "available" && finding.remediation.safeToApply && onApplyFix ? confirmationId === finding.id ? <>
+                  <button type="button" className="button-primary" onClick={() => { setConfirmationId(undefined); onApplyFix(finding); }}>Confirm apply</button>
+                  <button type="button" onClick={() => setConfirmationId(undefined)}>Cancel</button>
+                </> : <button type="button" className="button-primary" onClick={() => { setPreviewId(finding.id); setConfirmationId(finding.id); }}>Apply fix</button> : null}
+                <small>{proposal.status === "requires-review" ? "Review required" : proposal.status}</small>
+                {proposal.validation ? <small>{proposal.validation}</small> : null}
+              </div> : null}
+              {previewId === finding.id && proposal?.before && proposal.after ? <div className="finding-diff" id={`${finding.id}-diff`}>
+                <div><span>Before</span><pre>{proposal.before}</pre></div>
+                <div><span>After</span><pre>{proposal.after}</pre></div>
+              </div> : null}
+            </li>;
+          })}</ol>
         )}
         <CrossDomainContracts refreshKey={refreshKey} idSuffix={idSuffix} />
       </section>
